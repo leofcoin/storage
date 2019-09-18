@@ -20,7 +20,7 @@ export default class LeofcoinStorage {
   }
   
   async get(path, encoding = 'json') {
-    return await this._successOrFail(read(join(this.path, path), encoding));
+    return await this._successOrFail(read(join(this.path, path)));
   }
   
   async set(path, value) {
