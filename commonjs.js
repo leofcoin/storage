@@ -22,12 +22,12 @@ class LeofcoinStorage {
   }
   
   async get(path, encoding = 'json') {
-    return await this._successOrFail(fs.read(path$1.join(this.path, path)));
+    return await this._successOrFail(fs.readFile(path$1.join(this.path, path), encoding));
   }
   
   async set(path, value) {
     if (value instanceof Object) value = JSON.stringify(value);      
-    return await this._successOrFail(fs.write(path$1.join(this.path, path), value));
+    return await this._successOrFail(fs.writeFile(path$1.join(this.path, path), value));
   }
   
   async delete() {

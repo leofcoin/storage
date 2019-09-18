@@ -1,4 +1,4 @@
-import { read, write, unlink } from 'fs';
+import { readFile, writeFile, unlink } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -20,12 +20,12 @@ export default class LeofcoinStorage {
   }
   
   async get(path, encoding = 'json') {
-    return await this._successOrFail(read(join(this.path, path)));
+    return await this._successOrFail(readFile(join(this.path, path), encoding));
   }
   
   async set(path, value) {
     if (value instanceof Object) value = JSON.stringify(value);      
-    return await this._successOrFail(write(join(this.path, path), value));
+    return await this._successOrFail(writeFile(join(this.path, path), value));
   }
   
   async delete() {
