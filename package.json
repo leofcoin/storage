@@ -1,0 +1,21 @@
+{
+  "name": "lfc-storage",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "module": "src/commonjs.js",
+  "browser": "browser.js",
+  "scripts": {
+    "c": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^1.21.4"
+  },
+  "dependencies": {
+    "idb-keyval": "^3.2.0"
+  }
+}
