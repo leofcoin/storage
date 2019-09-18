@@ -22,7 +22,13 @@ class LeofcoinStorage {
   }
   
   async get(path, encoding = 'json') {
-    return await this._successOrFail(fs.readFile(path$1.join(this.path, path), encoding));
+    let data;
+    if (encoding && encoding !== 'json')
+      data = await this._successOrFail(fs.readFile(path$1.join(this.path, path), encoding));
+    else data = await this._successOrFail(fs.readFile(path$1.join(this.path, path)));
+    
+    if (encoding === 'json') data = JSON.parse(data);
+    return ;
   }
   
   async set(path, value) {
