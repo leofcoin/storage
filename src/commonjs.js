@@ -25,8 +25,8 @@ export default class LeofcoinStorage {
       data = await this._successOrFail(readFile(join(this.path, path), encoding));
     else data = await this._successOrFail(readFile(join(this.path, path)));
     
-    if (encoding === 'json') data = JSON.parse(data)
-    return ;
+    if (encoding === 'json' && data) data = JSON.parse(data)
+    return;
   }
   
   async set(path, value) {
