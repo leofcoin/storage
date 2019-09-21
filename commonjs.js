@@ -4,6 +4,8 @@
 const LevelStore = require('datastore-level');
 const { homedir } = require('os');
 const { join } = require('path');
+const Key = require('interface-datastore').Key;
+
 class LeofcoinStorage {
 
   constructor(path) {
@@ -21,7 +23,7 @@ class LeofcoinStorage {
       return { 
         value,
         type,
-        key: i
+        key: new Key(i)
       };
     }));
     
@@ -32,7 +34,7 @@ class LeofcoinStorage {
       if (typeof _value[key] === 'object') value = JSON.stringify(_value[key]);
       else value = _value[key];
       
-      jobs.push({ type, key, value});
+      jobs.push({ type, key: new Key(key), value});
     }
     
     return this._many(jobs)
@@ -46,19 +48,43 @@ class LeofcoinStorage {
     if (!value) return this.many('put', key);
     if (typeof value === 'object') value = JSON.stringify(value);
     
-    return this.db.put(key, value);    
+    return this.db.put(new Key(key), value);    
+  }
+  
+  async query() {
+    console.log('q');
+    const object = {};
+    
+    for await (let value of this.db.query({})) {
+      const key = value.key.baseNamespace();
+      value = value.value.toString();
+      object[key] = this.possibleJSON(value);
+    }
+    
+    return object
   }
   
   async get(key) {
+    if (!key) return this.query()
     if (typeof key === 'object') return this.many('get', key);
     
-    let data = await this.db.get(key);
+    let data = await this.db.get(new Key(key));
+    if (!data) return undefined
     data = data.toString();
-    if (data.charAt(0) === '{' && data.charAt(data.length - 1) === '}' || 
-        data.charAt(0) === '[' && data.charAt(data.length - 1) === ']') 
-        data = JSON.parse(data);
         
-    return data
+    return this.possibleJSON(data)
+  }
+  
+  async delete(key) {
+    return this.db.delete(new Key(key))
+  }
+  
+  possibleJSON(string) {
+    if (string.charAt(0) === '{' && string.charAt(string.length - 1) === '}' || 
+        string.charAt(0) === '[' && string.charAt(string.length - 1) === ']') 
+        string = JSON.parse(string);
+        
+    return string;
   }
 
 }
