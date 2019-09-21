@@ -14,19 +14,7 @@ class LeofcoinStorage {
     // this.db = level(path, { prefix: 'lfc-'})
   }
   
-  async many(type, _value) {
-    if (Array.isArray(_value)) return this._many(_value.map((item, i) => {
-      let value;
-      if (typeof item === 'object') value = JSON.stringify(item);
-      else value = item;
-      
-      return { 
-        value,
-        type,
-        key: new Key(i)
-      };
-    }));
-    
+  async many(type, _value) {    
     const jobs = [];
     
     for (const key of Object.keys(_value)) {
@@ -34,14 +22,10 @@ class LeofcoinStorage {
       if (typeof _value[key] === 'object') value = JSON.stringify(_value[key]);
       else value = _value[key];
       
-      jobs.push({ type, key: new Key(key), value});
+      jobs.push(this[type](key, value));
     }
     
-    return this._many(jobs)
-  }
-  
-  async _many(jobs) {
-    return this.db.batch(jobs)
+    return Promise.all(jobs)
   }
   
   async put(key, value) {
@@ -52,7 +36,6 @@ class LeofcoinStorage {
   }
   
   async query() {
-    console.log('q');
     const object = {};
     
     for await (let value of this.db.query({})) {
