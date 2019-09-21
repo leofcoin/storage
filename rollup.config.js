@@ -1,18 +1,12 @@
-export default [{
-  input: 'src/browser.js',
-  output: {
-    file: 'browser.es.js',
-    format: 'es'
-  }
-}, {
-  input: 'src/browser.js',
+export default [ {
+  input: 'src/level.js',
   output: {
     file: 'browser.js',
     name: 'LeofcoinStorage',
-    format: 'iife'
+    format: 'cjs'
   }
 }, {
-  input: 'src/commonjs.js',
+  input: 'src/level.js',
   output: {
     file: 'commonjs.js',
     format: 'cjs'

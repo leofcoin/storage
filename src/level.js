@@ -1,10 +1,8 @@
-'use strict';
-
 // const level = require('level');
-const LevelStore = require('datastore-level');
-const { homedir } = require('os');
-const { join } = require('path');
-class LeofcoinStorage {
+const LevelStore = require('datastore-level')
+const { homedir } = require('os')
+const { join } = require('path')
+export default class LeofcoinStorage {
 
   constructor(path) {
     this.root = homedir();
@@ -32,7 +30,7 @@ class LeofcoinStorage {
       if (typeof _value[key] === 'object') value = JSON.stringify(_value[key]);
       else value = _value[key];
       
-      jobs.push({ type, key, value});
+      jobs.push({ type, key, value})
     }
     
     return this._many(jobs)
@@ -52,7 +50,7 @@ class LeofcoinStorage {
   async get(key) {
     if (typeof key === 'object') return this.many('get', key);
     
-    let data = await this.db.get(key);
+    let data = await this.db.get(key)
     data = data.toString();
     if (data.charAt(0) === '{' && data.charAt(data.length - 1) === '}' || 
         data.charAt(0) === '[' && data.charAt(data.length - 1) === ']') 
@@ -62,5 +60,3 @@ class LeofcoinStorage {
   }
 
 }
-
-module.exports = LeofcoinStorage;

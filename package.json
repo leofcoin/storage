@@ -1,13 +1,14 @@
 {
   "name": "lfc-storage",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "",
-  "main": "index.js",
-  "module": "src/commonjs.js",
+  "main": "commonjs.js",
+  "module": "src/level.js",
   "browser": "browser.js",
   "scripts": {
     "c": "rollup -c",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "b": "npm run c && browserify commonjs.js --standalone LeofcoinStorage -o browser.js",
+    "test": "node test.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,6 @@
     "rollup": "^1.21.4"
   },
   "dependencies": {
-    "idb-keyval": "^3.2.0"
+    "datastore-level": "^0.12.1"
   }
 }
