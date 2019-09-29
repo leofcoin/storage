@@ -3,11 +3,19 @@ const LevelStore = require('datastore-level')
 const { homedir } = require('os')
 const { join } = require('path')
 const Key = require('interface-datastore').Key
+const {readdirSync, mkdirSync} = require('fs')
 
 export default class LeofcoinStorage {
 
   constructor(path) {
     this.root = homedir();
+    let exists;
+    if (readdirSync) try {
+      readdirSync(join(this.root, '.leofcoin'))
+    } catch (e) {
+      if (e.code === 'ENOENT') mkdirSync(join(this.root, '.leofcoin'))
+      else throw e
+    }
     this.db = new LevelStore(join(this.root, '.leofcoin', path));
     // this.db = level(path, { prefix: 'lfc-'})
   }
@@ -16,10 +24,11 @@ export default class LeofcoinStorage {
     const jobs = [];
     
     for (const key of Object.keys(_value)) {
-      let value;
-      if (typeof _value[key] === 'object') value = JSON.stringify(_value[key]);
-      else value = _value[key];
-      
+      let value = _value[key];      
+      if (typeof value === 'object' ||
+          typeof value === 'boolean' ||
+          typeof value === 'number') value = JSON.stringify(value);
+          
       jobs.push(this[type](key, value))
     }
     
@@ -27,8 +36,10 @@ export default class LeofcoinStorage {
   }
   
   async put(key, value) {
-    if (!value) return this.many('put', key);
-    if (typeof value === 'object') value = JSON.stringify(value);
+    if (typeof key === 'object') return this.many('put', key);
+    if (typeof value === 'object' ||
+        typeof value === 'boolean' ||
+        typeof value === 'number') value = JSON.stringify(value);
     
     return this.db.put(new Key(key), value);    
   }
@@ -62,7 +73,10 @@ export default class LeofcoinStorage {
   
   possibleJSON(string) {
     if (string.charAt(0) === '{' && string.charAt(string.length - 1) === '}' || 
-        string.charAt(0) === '[' && string.charAt(string.length - 1) === ']') 
+        string.charAt(0) === '[' && string.charAt(string.length - 1) === ']' ||
+        string === 'true' ||
+        string === 'false' ||
+        !isNaN(string)) 
         string = JSON.parse(string);
         
     return string;
