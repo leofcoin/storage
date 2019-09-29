@@ -27,7 +27,7 @@ export default class LeofcoinStorage {
       let value = _value[key];      
       if (typeof value === 'object' ||
           typeof value === 'boolean' ||
-          typeof value === 'number') value = JSON.stringify(value);
+          !isNaN(value)) value = JSON.stringify(value);
           
       jobs.push(this[type](key, value))
     }
@@ -39,7 +39,7 @@ export default class LeofcoinStorage {
     if (typeof key === 'object') return this.many('put', key);
     if (typeof value === 'object' ||
         typeof value === 'boolean' ||
-        typeof value === 'number') value = JSON.stringify(value);
+        !isNaN(value)) value = JSON.stringify(value);
     
     return this.db.put(new Key(key), value);    
   }
