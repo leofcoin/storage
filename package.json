@@ -14,7 +14,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "rollup": "^1.21.4"
+    "rollup": "^1.26.0"
   },
   "dependencies": {
     "datastore-level": "^0.12.1"
