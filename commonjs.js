@@ -72,10 +72,10 @@ class LeofcoinStorage {
     if (typeof key === 'object') return this.many('has', key);
     
     try {
-      let data = await this.db.get(new Key(key));
+      await this.db.get(new Key(key));
       return true;
     } catch (e) {
-      if (!data) return false
+      return false
     }
   }
   
