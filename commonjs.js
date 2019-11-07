@@ -68,6 +68,14 @@ class LeofcoinStorage {
     return this.possibleJSON(data)
   }
   
+  async has(key) {
+    if (typeof key === 'object') return this.many('has', key);
+    
+    let data = await this.db.get(new Key(key));
+    if (!data) return false
+    return true;
+  }
+  
   async delete(key) {
     return this.db.delete(new Key(key))
   }
