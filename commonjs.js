@@ -21,15 +21,21 @@ class LeofcoinStorage {
     // this.db = level(path, { prefix: 'lfc-'})
   }
   
+  toBuffer(value) {
+    if (Buffer.isBuffer(value)) return value;
+    if (typeof value === 'object' ||
+        typeof value === 'boolean' ||
+        !isNaN(value)) value = JSON.stringify(value);
+        
+    return Buffer.from(value)
+  }
+  
   async many(type, _value) {    
     const jobs = [];
     
     for (const key of Object.keys(_value)) {
-      let value = _value[key];      
-      if (typeof value === 'object' ||
-          typeof value === 'boolean' ||
-          !isNaN(value)) value = JSON.stringify(value);
-          
+      const value = this.toBuffer(_value[key]);
+      
       jobs.push(this[type](key, value));
     }
     
@@ -38,20 +44,17 @@ class LeofcoinStorage {
   
   async put(key, value) {
     if (typeof key === 'object') return this.many('put', key);
-    if (typeof value === 'object' ||
-        typeof value === 'boolean' ||
-        !isNaN(value)) value = JSON.stringify(value);
-    
+    value = this.toBuffer(value);
+        
     return this.db.put(new Key(key), value);    
   }
   
   async query() {
     const object = {};
     
-    for await (let value of this.db.query({})) {
-      const key = value.key.baseNamespace();
-      value = value.value.toString();
-      object[key] = this.possibleJSON(value);
+    for await (let query of this.db.query({})) {
+      const key = query.key.baseNamespace();
+      object[key] = this.possibleJSON(query.value);
     }
     
     return object
@@ -63,7 +66,6 @@ class LeofcoinStorage {
     
     let data = await this.db.get(new Key(key));
     if (!data) return undefined
-    data = data.toString();
         
     return this.possibleJSON(data)
   }
@@ -83,15 +85,16 @@ class LeofcoinStorage {
     return this.db.delete(new Key(key))
   }
   
-  possibleJSON(string) {
+  possibleJSON(data) {
+    let string = data.toString();
     if (string.charAt(0) === '{' && string.charAt(string.length - 1) === '}' || 
         string.charAt(0) === '[' && string.charAt(string.length - 1) === ']' ||
         string === 'true' ||
         string === 'false' ||
         !isNaN(string)) 
-        string = JSON.parse(string);
+        return JSON.parse(string);
         
-    return string;
+    return data;
   }
 
 }
