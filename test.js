@@ -1,6 +1,6 @@
 const m = require('./');
 
-const store = new m('config')
+const store = new m('storage_test/test/depth/very/deep')
 
 new Promise((resolve, reject) => store.put('test', 1).then(() => {
   store.get('test').then(value => {
