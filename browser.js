@@ -101,6 +101,11 @@ class LeofcoinStorage {
     return this.db.delete(new Key(key))
   }
   
+  async size() {
+    const object = await this.query();
+    return Object.keys(object).length
+  }
+  
   possibleJSON(data) {
     let string = data.toString();
     if (string.charAt(0) === '{' && string.charAt(string.length - 1) === '}' || 
