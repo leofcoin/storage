@@ -20,7 +20,12 @@ export default class LeofcoinStorage {
         if (parts.length > 0) {
           for (const path of parts) {
             _path = join(_path, path)
-            mkdirSync(_path)
+            try {
+              readdirSync(_path)
+            } catch (e) {
+              if (e.code === 'ENOENT') mkdirSync(_path)
+              else throw e
+            }
           }
         } else {
           mkdirSync(this.root)
