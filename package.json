@@ -1,6 +1,6 @@
 {
   "name": "lfc-storage",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "",
   "main": "commonjs.js",
   "module": "src/level.js",
