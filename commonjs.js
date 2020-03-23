@@ -115,7 +115,8 @@ class LeofcoinStorage {
         !isNaN(string)) 
         return JSON.parse(string);
         
-    return data;
+    if (isNaN(data)) return data.toString()
+    return data
   }
 
 }
