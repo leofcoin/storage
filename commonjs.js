@@ -62,7 +62,7 @@ class LeofcoinStorage {
     if (typeof key === 'object') return this.many('put', key);
     value = this.toBuffer(value);
         
-    return this.db.put(new Key(key), value);    
+    return this.db.put(new Key(String(key)), value);    
   }
   
   async query() {
@@ -79,8 +79,7 @@ class LeofcoinStorage {
   async get(key) {
     if (!key) return this.query()
     if (typeof key === 'object') return this.many('get', key);
-    
-    let data = await this.db.get(new Key(key));
+    let data = await this.db.get(new Key(String(key)));
     if (!data) return undefined
         
     return this.possibleJSON(data)
@@ -90,7 +89,7 @@ class LeofcoinStorage {
     if (typeof key === 'object') return this.many('has', key);
     
     try {
-      await this.db.get(new Key(key));
+      await this.db.get(new Key(String(key)));
       return true;
     } catch (e) {
       return false
@@ -98,7 +97,7 @@ class LeofcoinStorage {
   }
   
   async delete(key) {
-    return this.db.delete(new Key(key))
+    return this.db.delete(new Key(String(key)))
   }
   
   async size() {

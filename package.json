@@ -1,22 +1,32 @@
 {
-  "name": "lfc-storage",
-  "version": "1.9.0",
-  "description": "",
+  "name": "@leofcoin/storage",
+  "version": "2.0.0",
   "main": "commonjs.js",
   "module": "src/level.js",
   "browser": "browser.js",
   "scripts": {
     "c": "rollup -c",
-    "b": "npm run c && browserify commonjs.js --standalone LeofcoinStorage -o browser.js",
+    "b": "browserify browser.js --standalone LeofcoinStorage -o browser.js",
     "test": "node test.js"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "rollup": "^1.26.0"
+    "browserify": "^16.5.1",
+    "rollup": "^1.32.1",
+    "tape": "^5.0.0"
   },
   "dependencies": {
-    "datastore-level": "^0.12.1"
-  }
+    "datastore-level": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leofcoin/lfc-storage.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leofcoin/lfc-storage/issues"
+  },
+  "homepage": "https://github.com/leofcoin/lfc-storage#readme",
+  "description": ""
 }
