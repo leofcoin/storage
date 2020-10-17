@@ -7,13 +7,15 @@ const {readdirSync, mkdirSync} = require('fs')
 
 export default class LeofcoinStorage {
 
-  constructor(path, root = '.leofcoin') {
-    this.root = join(homedir(), root);
+  constructor(path, root = '.leofcoin', home = true) {
+    if (!home) this.root = root
+    else this.root = join(homedir(), root)
+    
     let exists;
     if (readdirSync) try {
       readdirSync(this.root)
     } catch (e) {
-      let _path = homedir()
+      let _path = home ? homedir() : root
       const parts = root.split('/')
       if (e.code === 'ENOENT') {
         

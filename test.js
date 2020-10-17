@@ -9,6 +9,12 @@ test('can create store', tape => {
   tape.ok(store)
 })
 
+test('can create store outside homedir', tape => {
+  tape.plan(1)
+  store = new m('storage_test/test/depth/very/deep', './', false)
+  tape.ok(store)
+})
+
 test('can put value', async tape => {
   tape.plan(1)
   await store.put('test', 1)
