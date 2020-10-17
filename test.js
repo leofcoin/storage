@@ -20,6 +20,8 @@ test('can put value', async tape => {
   await store.put('test', 1)
   const value = await store.get('test')
   
+  await store.put('hello', 'world')
+  console.log(await store.size());
   tape.ok(Boolean(value === 1))
 })
 

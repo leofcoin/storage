@@ -22,11 +22,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leofcoin/lfc-storage.git"
+    "url": "git+https://github.com/leofcoin/storage.git"
   },
   "bugs": {
-    "url": "https://github.com/leofcoin/lfc-storage/issues"
+    "url": "https://github.com/leofcoin/storage/issues"
   },
-  "homepage": "https://github.com/leofcoin/lfc-storage#readme",
+  "homepage": "https://github.com/leofcoin/storage#readme",
   "description": ""
 }
