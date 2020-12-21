@@ -19,9 +19,8 @@ test('can put value', async tape => {
   tape.plan(1)
   await store.put('test', 1)
   const value = await store.get('test')
-  
+
   await store.put('hello', 'world')
-  console.log(await store.size());
   tape.ok(Boolean(value === 1))
 })
 
@@ -36,6 +35,6 @@ test('can get JSON', async tape => {
   tape.plan(1)
   await store.put('test2', {json: true})
   const value = await store.get('test2')
-  
+
   tape.ok(value.json)
 })

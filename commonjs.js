@@ -18,7 +18,7 @@ class LeofcoinStorage {
       let _path = home ? homedir() : root;
       const parts = root.split('/');
       if (e.code === 'ENOENT') {
-        
+
         if (parts.length > 0) {
           for (const path of parts) {
             _path = join(_path, path);
@@ -37,58 +37,57 @@ class LeofcoinStorage {
     this.db = new LevelStore(join(this.root, path));
     // this.db = level(path, { prefix: 'lfc-'})
   }
-  
+
   toBuffer(value) {
     if (Buffer.isBuffer(value)) return value;
     if (typeof value === 'object' ||
         typeof value === 'boolean' ||
         !isNaN(value)) value = JSON.stringify(value);
-        
+
     return Buffer.from(value)
   }
-  
-  async many(type, _value) {    
+
+  async many(type, _value) {
     const jobs = [];
-    
+
     for (const key of Object.keys(_value)) {
       const value = this.toBuffer(_value[key]);
-      
+
       jobs.push(this[type](key, value));
     }
-    
+
     return Promise.all(jobs)
   }
-  
+
   async put(key, value) {
     if (typeof key === 'object') return this.many('put', key);
     value = this.toBuffer(value);
-        
-    return this.db.put(new Key(String(key)), value);    
+
+    return this.db.put(new Key(String(key)), value);
   }
-  
+
   async query() {
     const object = {};
-    
+
     for await (let query of this.db.query({})) {
       const key = query.key.baseNamespace();
       object[key] = this.possibleJSON(query.value);
     }
-    
+
     return object
   }
-  
+
   async get(key) {
     if (!key) return this.query()
     if (typeof key === 'object') return this.many('get', key);
     let data = await this.db.get(new Key(String(key)));
     if (!data) return undefined
-        
     return this.possibleJSON(data)
   }
-  
+
   async has(key) {
     if (typeof key === 'object') return this.many('has', key);
-    
+
     try {
       await this.db.get(new Key(String(key)));
       return true;
@@ -96,26 +95,28 @@ class LeofcoinStorage {
       return false
     }
   }
-  
+
   async delete(key) {
     return this.db.delete(new Key(String(key)))
   }
-  
+
   async size() {
     const object = await this.query();
     return Object.keys(object).length
   }
-  
+
+  // TODO: deprecate usage possibleJSON
+  // make possibleJSON optional
+  // or release as its own package
   possibleJSON(data) {
     let string = data.toString();
-    if (string.charAt(0) === '{' && string.charAt(string.length - 1) === '}' || 
+    if (string.charAt(0) === '{' && string.charAt(string.length - 1) === '}' ||
         string.charAt(0) === '[' && string.charAt(string.length - 1) === ']' ||
         string === 'true' ||
         string === 'false' ||
-        !isNaN(string)) 
+        !isNaN(string))
         return JSON.parse(string);
-        
-    if (isNaN(data)) return data.toString()
+
     return data
   }
 
