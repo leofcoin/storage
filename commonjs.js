@@ -10,6 +10,7 @@ const {readdirSync, mkdirSync} = require('fs');
 class LeofcoinStorage {
 
   constructor(path, root = '.leofcoin', home = true) {
+    this.name = path;
     if (!home) this.root = root;
     else this.root = join(homedir(), root);
     if (readdirSync) try {
@@ -34,6 +35,8 @@ class LeofcoinStorage {
         }
       } else throw e
     }
+
+
     this.db = new LevelStore(join(this.root, path));
     // this.db = level(path, { prefix: 'lfc-'})
   }

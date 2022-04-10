@@ -5,13 +5,13 @@ let store;
 
 test('can create store', tape => {
   tape.plan(1)
-  store = new m('storage_test/test/depth/very/deep')
+  store = new m('deep', 'storage_test/test/depth/very')
   tape.ok(store)
 })
 
 test('can create store outside homedir', tape => {
   tape.plan(1)
-  store = new m('storage_test/test/depth/very/deep', './', false)
+  store = new m('deep','./storage_test/test/depth/very', false)
   tape.ok(store)
 })
 
@@ -37,4 +37,10 @@ test('can get JSON', async tape => {
   const value = await store.get('test2')
 
   tape.ok(value.json)
+})
+
+
+test('can get store name', async tape => {
+  tape.plan(1)
+  tape.ok(store.name === 'deep')
 })

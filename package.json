@@ -3,7 +3,6 @@
   "version": "2.1.0",
   "main": "commonjs.js",
   "module": "src/level.js",
-  "browser": "browser.js",
   "scripts": {
     "c": "rollup -c",
     "b": "browserify browser.js --standalone LeofcoinStorage -o browser.js",
@@ -13,12 +12,12 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "^17.0.0",
-    "rollup": "^2.32.0",
+    "rollup": "^2.70.1",
     "tape": "^5.0.1"
   },
   "dependencies": {
-    "datastore-level": "^1.1.0"
+    "datastore-level": "^1.1.0",
+    "ipfs-utils": "^9.0.5"
   },
   "repository": {
     "type": "git",
