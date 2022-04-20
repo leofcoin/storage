@@ -1,6 +1,6 @@
 {
   "name": "@leofcoin/storage",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "main": "commonjs.js",
   "module": "src/level.js",
   "browser": "browser.js",
