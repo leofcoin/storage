@@ -6467,8 +6467,6 @@ class LeofcoinStorage {
         }
       } else throw e
     }
-
-
     this.db = new LevelStore(join(this.root, path));
     // this.db = level(path, { prefix: 'lfc-'})
   }
@@ -6985,8 +6983,8 @@ AbstractLevelDOWN.prototype._checkValue = function (value) {
 
 module.exports = AbstractLevelDOWN
 
-}).call(this)}).call(this,{"isBuffer":require("C:/Users/vande/AppData/Roaming/nvm/v17.9.0/node_modules/browserify/node_modules/is-buffer/index.js")},require('_process'))
-},{"./abstract-chained-batch":37,"./abstract-iterator":38,"C:/Users/vande/AppData/Roaming/nvm/v17.9.0/node_modules/browserify/node_modules/is-buffer/index.js":25,"_process":31,"xtend":114}],40:[function(require,module,exports){
+}).call(this)}).call(this,{"isBuffer":require("C:/Users/vande/AppData/Roaming/nvm/v16.14.2/node_modules/browserify/node_modules/is-buffer/index.js")},require('_process'))
+},{"./abstract-chained-batch":37,"./abstract-iterator":38,"C:/Users/vande/AppData/Roaming/nvm/v16.14.2/node_modules/browserify/node_modules/is-buffer/index.js":25,"_process":31,"xtend":114}],40:[function(require,module,exports){
 exports.AbstractLevelDOWN = require('./abstract-leveldown')
 exports.AbstractIterator = require('./abstract-iterator')
 exports.AbstractChainedBatch = require('./abstract-chained-batch')
@@ -9950,8 +9948,8 @@ Level.destroy = function (location, prefix, callback) {
   }
 }
 
-}).call(this)}).call(this,{"isBuffer":require("C:/Users/vande/AppData/Roaming/nvm/v17.9.0/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"./iterator":80,"./util/immediate":81,"./util/mixed-to-buffer":82,"./util/support":83,"C:/Users/vande/AppData/Roaming/nvm/v17.9.0/node_modules/browserify/node_modules/is-buffer/index.js":25,"abstract-leveldown":40,"inherits":65}],80:[function(require,module,exports){
+}).call(this)}).call(this,{"isBuffer":require("C:/Users/vande/AppData/Roaming/nvm/v16.14.2/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"./iterator":80,"./util/immediate":81,"./util/mixed-to-buffer":82,"./util/support":83,"C:/Users/vande/AppData/Roaming/nvm/v16.14.2/node_modules/browserify/node_modules/is-buffer/index.js":25,"abstract-leveldown":40,"inherits":65}],80:[function(require,module,exports){
 /* global IDBKeyRange */
 
 'use strict'
@@ -10845,8 +10843,8 @@ exports.filter = function (range, compare) {
 
 
 
-}).call(this)}).call(this,{"isBuffer":require("C:/Users/vande/AppData/Roaming/nvm/v17.9.0/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"C:/Users/vande/AppData/Roaming/nvm/v17.9.0/node_modules/browserify/node_modules/is-buffer/index.js":25}],92:[function(require,module,exports){
+}).call(this)}).call(this,{"isBuffer":require("C:/Users/vande/AppData/Roaming/nvm/v16.14.2/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"C:/Users/vande/AppData/Roaming/nvm/v16.14.2/node_modules/browserify/node_modules/is-buffer/index.js":25}],92:[function(require,module,exports){
 let { urlAlphabet } = require('./url-alphabet/index.cjs')
 let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
 let customRandom = (alphabet, defaultSize, getRandom) => {

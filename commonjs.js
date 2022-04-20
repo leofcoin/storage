@@ -35,8 +35,6 @@ class LeofcoinStorage {
         }
       } else throw e
     }
-
-
     this.db = new LevelStore(join(this.root, path));
     // this.db = level(path, { prefix: 'lfc-'})
   }
