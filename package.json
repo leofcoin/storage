@@ -1,13 +1,13 @@
 {
   "name": "@leofcoin/storage",
   "version": "2.1.2",
-  "main": "commonjs.js",
+  "main": "./dist/commonjs.js",
   "module": "src/level.js",
-  "browser": "browser.js",
+  "browser": "dist/browser.js",
   "scripts": {
-    "build": "webpack",
+    "build": "npm run c && webpack",
     "c": "rollup -c",
-    "b": "browserify browser.js --standalone LeofcoinStorage -o browser.js",
+    "demo": "jsproject --serve ./ --port 5469",
     "test": "node test.js"
   },
   "keywords": [],
@@ -17,15 +17,14 @@
     "assert": "^2.0.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
-    "rollup": "^2.70.1",
+    "rollup": "^2.70.2",
     "tape": "^5.0.1",
     "util": "^0.12.4",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "datastore-level": "^1.1.0",
-    "ipfs-utils": "^9.0.5"
+    "datastore-level": "^8.0.0"
   },
   "repository": {
     "type": "git",

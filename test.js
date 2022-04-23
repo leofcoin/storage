@@ -24,6 +24,31 @@ test('can put value', async tape => {
   tape.ok(Boolean(value === 1))
 })
 
+test('can put value as Uint8Array', async tape => {
+  tape.plan(1)
+  await store.put('hello', new TextEncoder().encode('world'))
+  tape.ok(await store.has('hello'))
+})
+
+test('can read value as Uint8Array', async tape => {
+  tape.plan(1)
+  const value = await store.get('hello')
+  tape.ok(Boolean('world' === value))
+  // tape.ok(Boolean('world' === new TextDecoder().decode(value)))
+})
+
+test('can get keys', async tape => {
+  tape.plan(1)
+  const value = await store.keys()
+  tape.ok(value.length > 0)
+})
+
+test('can query', async tape => {
+  tape.plan(1)
+  const value = await store.get()
+  tape.ok(Object.keys(value).length > 0)
+})
+
 test('can put value (key as number)', async tape => {
   tape.plan(1)
   await store.put(1, 1)

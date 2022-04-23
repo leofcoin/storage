@@ -1,9 +1,8 @@
-// const level = require('level');
-const LevelStore = require('datastore-level')
-const { homedir } = require('os')
-const { join } = require('path')
-const Key = require('interface-datastore').Key
-const {readdirSync, mkdirSync} = require('fs')
+import { LevelDatastore } from 'datastore-level'
+import { homedir } from 'os'
+import { join } from 'path'
+import { Key } from 'interface-datastore'
+import {readdirSync, mkdirSync} from 'fs'
 
 export default class LeofcoinStorage {
 
@@ -17,12 +16,14 @@ export default class LeofcoinStorage {
       readdirSync(this.root)
     } catch (e) {
       let _path = home ? homedir() : root
-      const parts = root.split('/')
+      let parts = root.split('/')
+      if (parts.length === 0) parts = root.split(`\\`)
       if (e.code === 'ENOENT') {
-
+        _path = ''
         if (parts.length > 0) {
           for (const path of parts) {
             _path = join(_path, path)
+            console.log(_path);
             try {
               readdirSync(_path)
             } catch (e) {
@@ -35,24 +36,36 @@ export default class LeofcoinStorage {
         }
       } else throw e
     }
-    this.db = new LevelStore(join(this.root, path));
-    // this.db = level(path, { prefix: 'lfc-'})
+    this.db = new LevelDatastore(join(this.root, path));
+    this.db.open()
   }
 
-  toBuffer(value) {
-    if (Buffer.isBuffer(value)) return value;
-    if (typeof value === 'object' ||
-        typeof value === 'boolean' ||
-        !isNaN(value)) value = JSON.stringify(value);
+  toUint8Array(value) {
+    if (value instanceof Uint8Array) return value
+    if (value instanceof Object) value = JSON.stringify(value)
+    return new TextEncoder().encode(value)
+  }
 
-    return Buffer.from(value)
+  fromUint8Array(value) {
+    value = new TextDecoder().decode(value)
+    if (value === 'true') return true
+    if (value === 'false') return false
+    if (!isNaN(value)) return Number(value)
+    if (value.charAt(0) === '{' && value.charAt(value.length - 1) === '}' ||
+        value.charAt(0) === '[' && value.charAt(value.length - 1) === ']') try {
+          value = JSON.parse(value)
+        } catch {
+
+        }
+
+    return value
   }
 
   async many(type, _value) {
     const jobs = [];
 
     for (const key of Object.keys(_value)) {
-      const value = this.toBuffer(_value[key])
+      const value = this.toUint8Array(_value[key])
 
       jobs.push(this[type](key, value))
     }
@@ -62,7 +75,7 @@ export default class LeofcoinStorage {
 
   async put(key, value) {
     if (typeof key === 'object') return this.many('put', key);
-    value = this.toBuffer(value)
+    value = this.toUint8Array(value)
 
     return this.db.put(new Key(String(key)), value);
   }
@@ -71,10 +84,9 @@ export default class LeofcoinStorage {
     const object = {}
 
     for await (let query of this.db.query({})) {
-      const key = query.key.baseNamespace()
-      object[key] = this.possibleJSON(query.value);
+      // TODO: nested keys?
+      object[new TextDecoder().decode(Object.values(query.key)[0])] = new TextDecoder().decode(query.value)
     }
-
     return object
   }
 
@@ -83,7 +95,7 @@ export default class LeofcoinStorage {
     if (typeof key === 'object') return this.many('get', key);
     let data = await this.db.get(new Key(String(key)))
     if (!data) return undefined
-    return this.possibleJSON(data)
+    return this.fromUint8Array(data)
   }
 
   async has(key) {
@@ -101,24 +113,19 @@ export default class LeofcoinStorage {
     return this.db.delete(new Key(String(key)))
   }
 
+  async keys() {
+    let array = []
+
+    for await (let query of this.db.queryKeys({})) {
+      // TODO: nested keys?
+      array = [...array, ...Object.values(query).map(value => new TextDecoder().decode(value))]
+    }
+    return array
+  }
+
   async size() {
     const object = await this.query()
     return Object.keys(object).length
-  }
-
-  // TODO: deprecate usage possibleJSON
-  // make possibleJSON optional
-  // or release as its own package
-  possibleJSON(data) {
-    let string = data.toString();
-    if (string.charAt(0) === '{' && string.charAt(string.length - 1) === '}' ||
-        string.charAt(0) === '[' && string.charAt(string.length - 1) === ']' ||
-        string === 'true' ||
-        string === 'false' ||
-        !isNaN(string))
-        return JSON.parse(string);
-
-    return data
   }
 
 }
