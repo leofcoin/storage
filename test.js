@@ -17,29 +17,20 @@ test('can create store outside homedir', tape => {
 
 test('can put value', async tape => {
   tape.plan(1)
-  await store.put('test', 1)
-  const value = await store.get('test')
-
-  await store.put('hello', 'world')
-  tape.ok(Boolean(value === 1))
-})
-
-test('can put value as Uint8Array', async tape => {
-  tape.plan(1)
   await store.put('hello', new TextEncoder().encode('world'))
   tape.ok(await store.has('hello'))
 })
 
-test('can read value as Uint8Array', async tape => {
+test('can get value', async tape => {
   tape.plan(1)
   const value = await store.get('hello')
-  tape.ok(Boolean('world' === value))
+  tape.ok(Boolean('world' === new TextDecoder().decode(value)))
   // tape.ok(Boolean('world' === new TextDecoder().decode(value)))
 })
 
 test('can get keys', async tape => {
   tape.plan(1)
-  const value = await store.keys()
+  const value = await store.keys(true)
   tape.ok(value.length > 0)
 })
 
@@ -49,23 +40,18 @@ test('can query', async tape => {
   tape.ok(Object.keys(value).length > 0)
 })
 
-test('can put value (key as number)', async tape => {
-  tape.plan(1)
-  await store.put(1, 1)
-  const value = await store.get(1)
-  tape.ok(Boolean(value === 1))
-})
-
-test('can get JSON', async tape => {
-  tape.plan(1)
-  await store.put('test2', {json: true})
-  const value = await store.get('test2')
-
-  tape.ok(value.json)
-})
-
 
 test('can get store name', async tape => {
   tape.plan(1)
   tape.ok(store.name === 'deep')
+})
+
+test('can get store size', async tape => {
+  tape.plan(1)
+  tape.ok(await store.size() > 0)
+})
+
+test('can get store length', async tape => {
+  tape.plan(1)
+  tape.ok(await store.length() > 0)
 })

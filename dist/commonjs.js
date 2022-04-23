@@ -40,34 +40,11 @@ class LeofcoinStorage {
     this.db.open();
   }
 
-  toUint8Array(value) {
-    if (value instanceof Uint8Array) return value
-    if (value instanceof Object) value = JSON.stringify(value);
-    return new TextEncoder().encode(value)
-  }
-
-  fromUint8Array(value) {
-    value = new TextDecoder().decode(value);
-    if (value === 'true') return true
-    if (value === 'false') return false
-    if (!isNaN(value)) return Number(value)
-    if (value.charAt(0) === '{' && value.charAt(value.length - 1) === '}' ||
-        value.charAt(0) === '[' && value.charAt(value.length - 1) === ']') try {
-          value = JSON.parse(value);
-        } catch {
-
-        }
-
-    return value
-  }
-
   async many(type, _value) {
     const jobs = [];
 
     for (const key of Object.keys(_value)) {
-      const value = this.toUint8Array(_value[key]);
-
-      jobs.push(this[type](key, value));
+      jobs.push(this[type](key, _value[key]));
     }
 
     return Promise.all(jobs)
@@ -75,17 +52,13 @@ class LeofcoinStorage {
 
   async put(key, value) {
     if (typeof key === 'object') return this.many('put', key);
-    value = this.toUint8Array(value);
-
-    return this.db.put(new interfaceDatastore.Key(String(key)), value);
+    return this.db.put(new interfaceDatastore.Key(key), value);
   }
 
   async query() {
     const object = {};
-
-    for await (let query of this.db.query({})) {
-      // TODO: nested keys?
-      object[new TextDecoder().decode(Object.values(query.key)[0])] = new TextDecoder().decode(query.value);
+    for await (const item of this.db.query({})) {
+      object[item.key] = item.value;
     }
     return object
   }
@@ -93,16 +66,14 @@ class LeofcoinStorage {
   async get(key) {
     if (!key) return this.query()
     if (typeof key === 'object') return this.many('get', key);
-    let data = await this.db.get(new interfaceDatastore.Key(String(key)));
-    if (!data) return undefined
-    return this.fromUint8Array(data)
+    return this.db.get(new interfaceDatastore.Key(key))
   }
 
   async has(key) {
     if (typeof key === 'object') return this.many('has', key);
 
     try {
-      await this.db.get(new interfaceDatastore.Key(String(key)));
+      await this.db.get(new interfaceDatastore.Key(key));
       return true;
     } catch (e) {
       return false
@@ -110,22 +81,28 @@ class LeofcoinStorage {
   }
 
   async delete(key) {
-    return this.db.delete(new interfaceDatastore.Key(String(key)))
+    return this.db.delete(new interfaceDatastore.Key(key))
   }
 
-  async keys() {
-    let array = [];
-
-    for await (let query of this.db.queryKeys({})) {
-      // TODO: nested keys?
-      array = [...array, ...Object.values(query).map(value => new TextDecoder().decode(value))];
+  async keys(asUint8Array = false) {
+    const array = [];
+    for await (const item of this.db.queryKeys({})) {
+      array.push(asUint8Array ? item.uint8Array() : item.toString());
     }
     return array
   }
 
+  async length() {
+    const keys = await this.keys();
+    return keys.length
+  }
+
   async size() {
-    const object = await this.query();
-    return Object.keys(object).length
+    let size = 0;
+    for await (const item of this.db.query({})) {
+      size += item.value.length;
+    }
+    return size
   }
 
 }
