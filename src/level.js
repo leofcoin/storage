@@ -7,7 +7,7 @@ import {readdirSync, mkdirSync} from 'fs'
 export default class LeofcoinStorage {
 
   constructor(path, root = '.leofcoin', home = true) {
-    this.name = path
+    this.name = options.name || path
     if (!home) this.root = root
     else this.root = join(homedir(), root)
 
