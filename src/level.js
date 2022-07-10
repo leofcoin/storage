@@ -7,7 +7,8 @@ import {readdirSync, mkdirSync} from 'fs'
 export default class LeofcoinStorage {
 
   constructor(path, root = '.leofcoin', home = true) {
-    this.name = options.name || path
+    // this.name = options.name || path
+    this.name = path
     if (!home) this.root = root
     else this.root = join(homedir(), root)
 
@@ -58,7 +59,7 @@ export default class LeofcoinStorage {
   async query() {
     const object = {}
     for await (const item of this.db.query({})) {
-      object[item.key] = item.value
+      object[String(item.key).replace('/', '')] = item.value
     }
     return object
   }

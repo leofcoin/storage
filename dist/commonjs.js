@@ -9,6 +9,7 @@ var fs = require('fs');
 class LeofcoinStorage {
 
   constructor(path$1, root = '.leofcoin', home = true) {
+    // this.name = options.name || path
     this.name = path$1;
     if (!home) this.root = root;
     else this.root = path.join(os.homedir(), root);
@@ -58,7 +59,7 @@ class LeofcoinStorage {
   async query() {
     const object = {};
     for await (const item of this.db.query({})) {
-      object[item.key] = item.value;
+      object[String(item.key).replace('/', '')] = item.value;
     }
     return object
   }
