@@ -2,10 +2,10 @@
   "name": "@leofcoin/storage",
   "version": "2.3.2",
   "main": "./dist/commonjs.js",
-  "module": "src/level.js",
+  "module": "src/storage.js",
   "browser": "dist/browser.js",
   "scripts": {
-    "build": "npm run c && webpack",
+    "build": "npm run c",
     "c": "rollup -c",
     "demo": "jsproject --serve ./ --port 5469",
     "test": "node test.js"
@@ -14,17 +14,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "assert": "^2.0.0",
-    "os-browserify": "^0.3.0",
-    "path-browserify": "^1.0.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "rollup": "^2.70.2",
-    "tape": "^5.0.1",
-    "util": "^0.12.4",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2"
-  },
-  "dependencies": {
-    "datastore-level": "^8.0.0"
+    "rollup-plugin-modify": "^3.0.0",
+    "tape": "^5.0.1"
   },
   "repository": {
     "type": "git",
@@ -34,5 +27,10 @@
     "url": "https://github.com/leofcoin/storage/issues"
   },
   "homepage": "https://github.com/leofcoin/storage#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@vandeurenglenn/base32": "^1.1.0",
+    "@vandeurenglenn/base58": "^1.1.0",
+    "idb": "^7.0.2"
+  }
 }

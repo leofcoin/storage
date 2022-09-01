@@ -5,13 +5,13 @@ let store;
 
 test('can create store', tape => {
   tape.plan(1)
-  store = new m('deep', 'storage_test/test/depth/very')
+  store = new m('deep', 'storage_test')
   tape.ok(store)
 })
 
 test('can create store outside homedir', tape => {
   tape.plan(1)
-  store = new m('deep','./storage_test/test/depth/very', false)
+  store = new m('deep','storage_test/test/depth/very', false)
   tape.ok(store)
 })
 
@@ -24,7 +24,7 @@ test('can put value', async tape => {
 test('can get value', async tape => {
   tape.plan(1)
   const value = await store.get('hello')
-  tape.ok(Boolean('world' === new TextDecoder().decode(value)))
+  tape.ok(Boolean('world' === value.toString()))
   // tape.ok(Boolean('world' === new TextDecoder().decode(value)))
 })
 

@@ -3,7 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <script src="./../dist/browser.js"></script>
+    <script type="module">
+
+      import LeofcoinStorage from "./../dist/es.js"
+      globalThis.LeofcoinStorage = LeofcoinStorage
+    </script>
   </head>
   <body>
 
