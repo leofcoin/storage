@@ -20,7 +20,7 @@ export default class Store {
   }
 
   async get(key) {
-    return (await (await this.db).get(this.name, this.toKeyPath(key))).toString()
+    return (await this.db).get(this.name, this.toKeyPath(key))
   }
 
   async put(key, value) {
