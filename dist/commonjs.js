@@ -104,7 +104,7 @@ class KeyValue {
    * @param {import('uint8arrays/to-string').SupportedEncodings} [encoding='utf8'] - The encoding to use.
    * @returns {string}
    */
-  toString (encoding = 'utf8') {
+  toString(encoding = 'utf8') {
     return decode(this.uint8Array)
   }
 
@@ -141,7 +141,7 @@ class Store {
   }
 
   toKeyValue(value) {
-    return value.toString('base32')
+    return value.uint8Array
   }
 
   async get(key) {

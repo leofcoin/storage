@@ -20,7 +20,7 @@ export default class Store {
   }
 
   toKeyValue(value) {
-    return value.toString('base32')
+    return value.uint8Array
   }
 
   async get(key) {

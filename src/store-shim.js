@@ -11,25 +11,32 @@ export default class Store {
       }
     })
   }
+  toKeyPath(key) {
+    return key.toString('base32')
+  }
+  
+  toKeyValue(value) {
+    return value.uint8Array
+  }
 
   async get(key) {
-    return (await this.db).get(this.name, key.toString('base32'));
+    return (await this.db).get(this.name, this.toKeyPath(key))
   }
 
   async put(key, value) {
-    return (await this.db).put(this.name, value, key.toString('base32'));
+    return (await this.db).put(this.name, this.toKeyValue(value), this.toKeyPath(key))
   }
 
   async del(key) {
-    return (await this.db).delete(this.name, key.toString('base32'));
+    return (await this.db).delete(this.name, this.toKeyPath(key))
   }
 
   async clear() {
-    return (await this.db).clear(this.name);
+    return (await this.db).clear(this.name)
   }
 
   async keys() {
-    return (await this.db).getAllKeys(this.name);
+    return (await this.db).getAllKeys(this.name)
   }
 
 

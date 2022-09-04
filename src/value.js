@@ -23,7 +23,7 @@ export default class KeyValue {
    * @param {import('uint8arrays/to-string').SupportedEncodings} [encoding='utf8'] - The encoding to use.
    * @returns {string}
    */
-  toString (encoding = 'utf8') {
+  toString(encoding = 'utf8') {
     return decode(this.uint8Array, encoding)
   }
 
