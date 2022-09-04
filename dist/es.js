@@ -364,7 +364,7 @@ class Store {
     this.version = version;
     this.name = name;
     this.root = root;
-    this.db = openDB(root, version, {
+    this.db = openDB(`${root}/${name}`, version, {
       upgrade(db) {
         db.createObjectStore(name);
       }
@@ -379,7 +379,7 @@ class Store {
   }
 
   async get(key) {
-    return (await this.db).get(this.name, this.toKeyPath(key))
+    return (await (await this.db).get(this.name, this.toKeyPath(key))).toString()
   }
 
   async put(key, value) {
