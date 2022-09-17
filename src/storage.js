@@ -12,7 +12,7 @@ export default class LeofcoinStorage {
   async get(key) {
     if (!key) return this.query()
     if (typeof key === 'object') return this.many('get', key);
-    return new KeyValue(await this.db.get(new Path(key))).toString()
+    return this.db.get(new Path(key))
   }
   /**
    * 
