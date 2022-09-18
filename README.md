@@ -4,7 +4,7 @@
 
 ## install
 ```sh
-npm i --save @leofcoin/storage
+npm i @leofcoin/storage
 ```
 
 ## Usage
@@ -12,13 +12,15 @@ npm i --save @leofcoin/storage
 ```js
 import LeofcoinStorage from '@leofcoin/storage'
 
-const storage = new LeofcoinStorage(name, root, home)
+const storage = new LeofcoinStorage(name, root)
+// stores/returns a value as uint8Array
 
-storage.put('hello', 'world') // hello world
-storage.get('hello') // world
-storage.has('hello') // true
-storage.size('hello') // 4
-storage.delete('hello') // bye world
+await storage.put('hello', 'world')
+(await storage.get('hello')).toString() // world
+await storage.get() // [{ key: 'hello', value: 'world'}]
+await storage.has('hello') // true
+await storage.size() // 4
+await storage.delete('hello') // bye world
 ```
 
 ## API
@@ -27,8 +29,51 @@ storage.delete('hello') // bye world
 
 name: store name<br>
 root: root directory<br>
-home: wether or not to use homedir (defaults to true) <br>
 
 ```js
-new LeofcoinStorage(name, root, home)
+new LeofcoinStorage(name, root)
+```
+
+### methods
+
+#### get
+key: path/filename<br>
+returns: Promise()&lt;uint8Array&gt;
+
+```js
+storage.get(key)
+
+const all = storage.get()
+console.log(all) // [{key,value}]
+```
+
+#### put
+key: path/filename<br>
+value: path/filename<br>
+returns: Promise()
+
+```js
+storage.put(key, value)
+```
+
+#### has
+key: path/filename<br>
+returns: Promise()&lt;Boolean&gt;
+
+```js
+storage.has(key)
+```
+
+#### keys
+returns: Promise()&lt;Array&gt;
+
+```js
+storage.keys()
+```
+
+#### values
+returns: Promise()&lt;Array&gt;
+
+```js
+storage.values()
 ```

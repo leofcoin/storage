@@ -413,6 +413,7 @@ class LeofcoinStorage {
     if (typeof key === 'object') return this.many('get', key);
     return this.db.get(new KeyPath(key))
   }
+  
   /**
    * 
    * @param {*} key 
@@ -461,7 +462,7 @@ class LeofcoinStorage {
 
   async values() {
     const keys = await this.keys();
-    
+
     let promises = [];
     for (const key of keys) {
       promises.push(this.db.get(key));
