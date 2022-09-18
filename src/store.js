@@ -16,7 +16,7 @@ export default class Store {
   }
 
   toKeyPath(key) {
-    return join(this.root, this.name, key.toString('base32'))
+    return join(this.root, this.name, key ? key.toString('base32') : key)
   }
 
   toKeyValue(value) {
