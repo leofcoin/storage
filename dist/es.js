@@ -459,6 +459,16 @@ class LeofcoinStorage {
     return Promise.all(promises)
   }
 
+  async values() {
+    const keys = await this.keys();
+    
+    let promises = [];
+    for (const key of keys) {
+      promises.push(this.db.get(key));
+    }
+    return Promise.all(promises)
+  }
+
   async many(type, _value) {
     const jobs = [];
 

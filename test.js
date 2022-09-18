@@ -40,6 +40,11 @@ test('can query', async tape => {
   tape.ok(Object.keys(value).length > 0)
 })
 
+test('can get values', async tape => {
+  tape.plan(1)
+  const value = await store.values()
+  tape.ok(Object.keys(value).length > 0)
+})
 
 test('can get store name', async tape => {
   tape.plan(1)

@@ -137,7 +137,7 @@ class Store {
   }
 
   toKeyPath(key) {
-    return path.join(this.root, this.name, key.toString('base32'))
+    return path.join(this.root, this.name, key ? key.toString('base32') : key)
   }
 
   toKeyValue(value) {
@@ -222,6 +222,16 @@ class LeofcoinStorage {
     let promises = [];
     for (const key of keys) {
       promises.push(this.#queryJob(key));
+    }
+    return Promise.all(promises)
+  }
+
+  async values() {
+    const keys = await this.keys();
+    
+    let promises = [];
+    for (const key of keys) {
+      promises.push(this.db.get(key));
     }
     return Promise.all(promises)
   }
