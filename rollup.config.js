@@ -7,7 +7,8 @@ export default [{
     format: 'cjs'
   },
   external: [
-    'node:fs/promises'
+    'node:fs/promises',
+    'classic-level'
   ],
   plugins: [
     resolve(),

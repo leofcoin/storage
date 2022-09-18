@@ -386,7 +386,7 @@ class Store {
     return (await this.db).put(this.name, this.toKeyValue(value), this.toKeyPath(key))
   }
 
-  async del(key) {
+  async delete(key) {
     return (await this.db).delete(this.name, this.toKeyPath(key))
   }
 
@@ -396,6 +396,16 @@ class Store {
 
   async keys() {
     return (await this.db).getAllKeys(this.name)
+  }
+
+  async values() {
+    const keys = await this.keys();
+
+    const values = [];
+    for (const key of keys) {
+      values.push(this.db.get(key));
+    }
+    return Promise.all(values)
   }
 
 
@@ -452,7 +462,6 @@ class LeofcoinStorage {
 
   async query() {
     const keys = await this.keys();
-
     let promises = [];
     for (const key of keys) {
       promises.push(this.#queryJob(key));
@@ -461,13 +470,7 @@ class LeofcoinStorage {
   }
 
   async values() {
-    const keys = await this.keys();
-
-    let promises = [];
-    for (const key of keys) {
-      promises.push(this.db.get(key));
-    }
-    return Promise.all(promises)
+    return this.db.values()
   }
 
   async many(type, _value) {

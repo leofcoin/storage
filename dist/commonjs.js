@@ -1,10 +1,10 @@
 'use strict';
 
 var path = require('path');
-var fs = require('fs');
-var util = require('util');
 var os = require('os');
+var fs = require('fs');
 var child_process = require('child_process');
+var classicLevel = require('classic-level');
 
 // import base32 from '@vandeurenglenn/base32'
 // import base58 from '@vandeurenglenn/base58'
@@ -124,20 +124,17 @@ const init = (root, home = true) => {
     return _root
 };
 
-const read = util.promisify(fs.readFile);
-const write = util.promisify(fs.writeFile);
-const readdir = util.promisify(fs.readdir);
-const unlink = util.promisify(fs.unlink);
-
 class Store {
   constructor(name = 'storage', root, version = 'v1.0.0') {
     this.name = name;
     this.root = init(root);
     this.version = version;
+
+    this.db = new classicLevel.ClassicLevel(path.join(this.root, this.name), { valueEncoding: 'view'});
   }
 
   toKeyPath(key) {
-    return path.join(this.root, this.name, key ? key.toString('base32') : key)
+    return key ? key.toString('base32') : key
   }
 
   toKeyValue(value) {
@@ -145,25 +142,35 @@ class Store {
   }
 
   async get(key) {
-    return read(this.toKeyPath(key))
+    return this.db.get(this.toKeyPath(key))
   }
 
   async put(key, value) {
-    return write(this.toKeyPath(key), this.toKeyValue(value))
+    return this.db.put(this.toKeyPath(key), this.toKeyValue(value))
   }
 
   async delete(key) {
-    return unlink(this.toKeyPath(key))
+    return this.db.del(this.toKeyPath(key))
   }
 
   async clear() {
-    const keys = await this.keys();
-    return Promise.all(keys.map(key => unlink(this.toKeyPath(key))))
+    return this.db.clear()
+  }
+
+  async values() {
+    const values = [];
+    for await (const value of this.db.values()) {
+      values.push(value);
+    }
+    return values
   }
 
   async keys() {
-    const keys = await readdir(this.toKeyPath(''));
-    return keys.map(key => new KeyPath(key))
+    const keys = [];
+    for await (const key of this.db.keys()) {
+      keys.push(key);
+    }
+    return keys
   }
 
 }
@@ -219,7 +226,6 @@ class LeofcoinStorage {
 
   async query() {
     const keys = await this.keys();
-
     let promises = [];
     for (const key of keys) {
       promises.push(this.#queryJob(key));
@@ -228,13 +234,7 @@ class LeofcoinStorage {
   }
 
   async values() {
-    const keys = await this.keys();
-
-    let promises = [];
-    for (const key of keys) {
-      promises.push(this.db.get(key));
-    }
-    return Promise.all(promises)
+    return this.db.values()
   }
 
   async many(type, _value) {

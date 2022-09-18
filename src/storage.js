@@ -53,7 +53,6 @@ export default class LeofcoinStorage {
 
   async query() {
     const keys = await this.keys()
-
     let promises = []
     for (const key of keys) {
       promises.push(this.#queryJob(key))
@@ -62,13 +61,7 @@ export default class LeofcoinStorage {
   }
 
   async values() {
-    const keys = await this.keys()
-
-    let promises = []
-    for (const key of keys) {
-      promises.push(this.db.get(key))
-    }
-    return Promise.all(promises)
+    return this.db.values()
   }
 
   async many(type, _value) {

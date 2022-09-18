@@ -27,7 +27,7 @@ export default class Store {
     return (await this.db).put(this.name, this.toKeyValue(value), this.toKeyPath(key))
   }
 
-  async del(key) {
+  async delete(key) {
     return (await this.db).delete(this.name, this.toKeyPath(key))
   }
 
@@ -37,6 +37,16 @@ export default class Store {
 
   async keys() {
     return (await this.db).getAllKeys(this.name)
+  }
+
+  async values() {
+    const keys = await this.keys()
+
+    const values = []
+    for (const key of keys) {
+      values.push(this.db.get(key))
+    }
+    return Promise.all(values)
   }
 
 
