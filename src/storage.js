@@ -42,8 +42,8 @@ export default class LeofcoinStorage {
     return this.db.delete(new Path(key))
   }
 
-  keys() {
-    return this.db.keys()
+  keys(limit = -1) {
+    return this.db.keys({limit})
   }
 
   async #queryJob(key) {
@@ -60,8 +60,8 @@ export default class LeofcoinStorage {
     return Promise.all(promises)
   }
 
-  async values() {
-    return this.db.values()
+  async values(limit = -1) {
+    return this.db.values({limit})
   }
 
   async many(type, _value) {

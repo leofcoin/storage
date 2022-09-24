@@ -157,17 +157,17 @@ class Store {
     return this.db.clear()
   }
 
-  async values() {
+  async values(limit = -1) {
     const values = [];
-    for await (const value of this.db.values()) {
+    for await (const value of this.db.values({limit})) {
       values.push(value);
     }
     return values
   }
 
-  async keys() {
+  async keys(limit = -1) {
     const keys = [];
-    for await (const key of this.db.keys()) {
+    for await (const key of this.db.keys({limit})) {
       keys.push(key);
     }
     return keys
@@ -215,8 +215,8 @@ class LeofcoinStorage {
     return this.db.delete(new KeyPath(key))
   }
 
-  keys() {
-    return this.db.keys()
+  keys(limit = -1) {
+    return this.db.keys({limit})
   }
 
   async #queryJob(key) {
@@ -233,8 +233,8 @@ class LeofcoinStorage {
     return Promise.all(promises)
   }
 
-  async values() {
-    return this.db.values()
+  async values(limit = -1) {
+    return this.db.values({limit})
   }
 
   async many(type, _value) {

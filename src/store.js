@@ -35,17 +35,17 @@ export default class Store {
     return this.db.clear()
   }
 
-  async values() {
+  async values(limit = -1) {
     const values = []
-    for await (const value of this.db.values()) {
+    for await (const value of this.db.values({limit})) {
       values.push(value)
     }
     return values
   }
 
-  async keys() {
+  async keys(limit = -1) {
     const keys = []
-    for await (const key of this.db.keys()) {
+    for await (const key of this.db.keys({limit})) {
       keys.push(key)
     }
     return keys

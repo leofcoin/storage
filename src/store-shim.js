@@ -1,53 +1,54 @@
-import { openDB } from 'idb';
+import { join } from 'path'
+import { init } from './utils'
+import {LevelBrowser} from 'level-browser'
 
 export default class Store {
-  constructor(name = 'storage', root = '.leofcoin', version = 1) {
-    this.version = version
+  constructor(name = 'storage', root, version = 'v1.0.0') {
     this.name = name
-    this.root = root
-    this.db = openDB(`${root}/${name}`, version, {
-      upgrade(db) {
-        db.createObjectStore(name);
-      }
-    })
+    this.root = init(root)
+    this.version = version
+
+    this.db = new LevelBrowser(join(this.root, this.name), { valueEncoding: 'view'})
   }
+
   toKeyPath(key) {
-    return key.toString('base32')
+    return key ? key.toString('base32') : key
   }
-  
+
   toKeyValue(value) {
     return value.uint8Array
   }
 
   async get(key) {
-    return (await this.db).get(this.name, this.toKeyPath(key))
+    return this.db.get(this.toKeyPath(key))
   }
 
   async put(key, value) {
-    return (await this.db).put(this.name, this.toKeyValue(value), this.toKeyPath(key))
+    return this.db.put(this.toKeyPath(key), this.toKeyValue(value))
   }
 
   async delete(key) {
-    return (await this.db).delete(this.name, this.toKeyPath(key))
+    return this.db.del(this.toKeyPath(key))
   }
 
   async clear() {
-    return (await this.db).clear(this.name)
+    return this.db.clear()
   }
 
-  async keys() {
-    return (await this.db).getAllKeys(this.name)
-  }
-
-  async values() {
-    const keys = await this.keys()
-
+  async values(limit = -1) {
     const values = []
-    for (const key of keys) {
-      values.push(this.db.get(key))
+    for await (const value of this.db.values({limit})) {
+      values.push(value)
     }
-    return Promise.all(values)
+    return values
   }
 
+  async keys(limit = -1) {
+    const keys = []
+    for await (const key of this.db.keys({limit})) {
+      keys.push(key)
+    }
+    return keys
+  }
 
 }
