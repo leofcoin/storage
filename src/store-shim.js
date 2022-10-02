@@ -1,14 +1,16 @@
 import { join } from 'path'
-import { init } from './utils'
-import {LevelBrowser} from 'level-browser'
+import * as BrowserLevel from 'browser-level'
 
 export default class Store {
   constructor(name = 'storage', root, version = 'v1.0.0') {
     this.name = name
-    this.root = init(root)
+    this.root = root
     this.version = version
 
-    this.db = new LevelBrowser(join(this.root, this.name), { valueEncoding: 'view'})
+    this.db = new BrowserLevel(
+      this.name,
+      { valueEncoding: 'view'}
+    )
   }
 
   toKeyPath(key) {

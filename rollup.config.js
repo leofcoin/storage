@@ -1,5 +1,6 @@
 import modify from 'rollup-plugin-modify'
 import resolve from '@rollup/plugin-node-resolve'
+import cjs from '@rollup/plugin-commonjs'
 export default [{
   input: 'src/storage.js',
   output: {
@@ -14,6 +15,19 @@ export default [{
     resolve(),
     modify({
       '@store:import': './store.js'
+    })
+  ]
+}, {
+  input: 'src/storage.js',
+  output: {
+    file: 'dist/bundle/es.js',
+    format: 'es'
+  },
+  plugins: [
+    cjs(),
+    resolve(),
+    modify({
+      '@store:import': './store-shim.js'
     })
   ]
 }, {
