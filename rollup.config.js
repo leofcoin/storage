@@ -37,7 +37,7 @@ export default [{
     format: 'es'
   },
   plugins: [
-    resolve(),
+    // resolve(),
     modify({
       '@store:import': './store-shim.js'
     })

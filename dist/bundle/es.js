@@ -1,21 +1,5 @@
-import 'path';
 import require$$0 from 'buffer';
 import require$$2 from 'events';
-
-function _mergeNamespaces(n, m) {
-  m.forEach(function (e) {
-    e && typeof e !== 'string' && !Array.isArray(e) && Object.keys(e).forEach(function (k) {
-      if (k !== 'default' && !(k in n)) {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () { return e[k]; }
-        });
-      }
-    });
-  });
-  return Object.freeze(n);
-}
 
 // import base32 from '@vandeurenglenn/base32'
 // import base58 from '@vandeurenglenn/base58'
@@ -122,8 +106,6 @@ class KeyValue {
 }
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-var browserLevel = {};
 
 var abstractLevel$1 = {};
 
@@ -3573,13 +3555,7 @@ BrowserLevel.destroy = function (location, prefix, callback) {
   return callback[kPromise]
 };
 
-var BrowserLevel_1 = browserLevel.BrowserLevel = BrowserLevel;
-
-var BrowserLevel$1 = /*#__PURE__*/_mergeNamespaces({
-  __proto__: null,
-  BrowserLevel: BrowserLevel_1,
-  'default': browserLevel
-}, [browserLevel]);
+var BrowserLevel_1 = BrowserLevel;
 
 class Store {
   constructor(name = 'storage', root, version = 'v1.0.0') {
@@ -3587,7 +3563,7 @@ class Store {
     this.root = root;
     this.version = version;
 
-    this.db = new BrowserLevel$1(
+    this.db = new BrowserLevel_1(
       this.name,
       { valueEncoding: 'view'}
     );

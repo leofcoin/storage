@@ -1,5 +1,4 @@
-import { join } from 'path'
-import * as BrowserLevel from 'browser-level'
+import { BrowserLevel } from 'browser-level'
 
 export default class Store {
   constructor(name = 'storage', root, version = 'v1.0.0') {
