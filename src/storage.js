@@ -1,6 +1,8 @@
-import Path from './path'
-import KeyValue from './value'
-import Store from '@store:import'
+import Path from './path.js'
+import KeyValue from './value.js'
+
+const importee = await import(globalThis.navigator ? './browser-store.js' : './store.js')
+const Store = importee.default
 
 export default class LeofcoinStorage {
 

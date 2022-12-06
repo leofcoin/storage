@@ -4,42 +4,32 @@ import cjs from '@rollup/plugin-commonjs'
 export default [{
   input: 'src/storage.js',
   output: {
-    file: 'dist/commonjs.js',
-    format: 'cjs'
+    file: 'dist/bundle.js',
+    format: 'es'
+  }
+}, {
+  input: 'src/browser-store.js',
+  output: {
+    file: 'dist/browser-store.js',
+    format: 'es'
+  },
+  plugins: [
+    resolve({
+      preferBuiltins: false
+    }),
+    cjs()
+  ]
+}, {
+  input: 'src/store.js',
+  output: {
+    file: 'dist/store.js',
+    format: 'es'
   },
   external: [
-    'node:fs/promises',
-    'classic-level'
-  ],
-  plugins: [
-    resolve(),
-    modify({
-      '@store:import': './store.js'
-    })
-  ]
-}, {
-  input: 'src/storage.js',
-  output: {
-    file: 'dist/bundle/es.js',
-    format: 'es'
-  },
-  plugins: [
-    cjs(),
-    resolve(),
-    modify({
-      '@store:import': './store-shim.js'
-    })
-  ]
-}, {
-  input: 'src/storage.js',
-  output: {
-    file: 'dist/es.js',
-    format: 'es'
-  },
-  plugins: [
-    // resolve(),
-    modify({
-      '@store:import': './store-shim.js'
-    })
+    'path',
+    'classic-level',
+    'os',
+    'fs',
+    'child_process'
   ]
 }]

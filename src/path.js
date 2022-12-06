@@ -1,4 +1,4 @@
-import { decode, encode } from './encoding'
+import { decode, encode } from './encoding.js'
 
 const pathSepS = '/'
 export default class KeyPath {

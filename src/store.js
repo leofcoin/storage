@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { init } from './utils'
+import { init } from './utils.js'
 import { ClassicLevel } from 'classic-level'
 
 export default class Store {

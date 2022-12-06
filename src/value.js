@@ -1,4 +1,4 @@
-import { decode, encode } from './encoding'
+import { decode, encode } from './encoding.js'
 
 export default class KeyValue {
 

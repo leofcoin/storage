@@ -77,3 +77,16 @@ returns: Promise()&lt;Array&gt;
 ```js
 storage.values()
 ```
+
+## build for browser
+webpack
+```js
+module.exports = {
+  ...
+  plugins: [
+      new webpack.ProvidePlugin({
+             process: 'process/browser',
+      }),
+  ],
+}
+```

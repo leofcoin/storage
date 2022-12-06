@@ -1,3 +1,1 @@
-module.exports = {
-  homedir: () => './'
-}
+export const homedir = () => './'

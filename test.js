@@ -1,5 +1,5 @@
-const m = require('./');
-const test = require('tape')
+import m from './src/storage.js'
+import test from 'tape'
 
 let store;
 
