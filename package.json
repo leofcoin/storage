@@ -3,7 +3,6 @@
   "version": "3.1.2",
   "main": "./src/storage.js",
   "type": "module",
-  "browser": "dist/bundle.js",
   "scripts": {
     "build": "npm run c",
     "c": "rollup -c",
