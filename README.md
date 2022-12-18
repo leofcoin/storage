@@ -7,6 +7,9 @@
 npm i @leofcoin/storage
 ```
 
+## breaking changes
+[checkout](./BREAKINGCHANGES.md)
+
 ## Usage
 
 ```js
