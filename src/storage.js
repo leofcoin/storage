@@ -1,14 +1,17 @@
 import Path from './path.js'
 import KeyValue from './value.js'
 
-const importee = await import(globalThis.navigator ? './browser-store.js' : './store.js')
-const Store = importee.default
-
 export default class LeofcoinStorage {
 
   constructor(name = 'storage', root = '.leofcoin') {
     this.name = name
-    this.db = new Store(name, root);
+    this.root = root
+  }
+
+  async init(name, root) {
+    const importee = await import(globalThis.navigator ? './browser-store.js' : './store.js')
+    const Store = importee.default
+    this.db = new Store(this.name, this.root);
   }
 
   async get(key) {

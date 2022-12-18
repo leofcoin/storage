@@ -3,15 +3,17 @@ import test from 'tape'
 
 let store;
 
-test('can create store', tape => {
+test('can create store', async tape => {
   tape.plan(1)
   store = new m('deep', 'storage_test')
+  await store.init()
   tape.ok(store)
 })
 
-test('can create store outside homedir', tape => {
+test('can create store outside homedir', async tape => {
   tape.plan(1)
   store = new m('deep','storage_test/test/depth/very', false)
+  await store.init()
   tape.ok(store)
 })
 

@@ -13,6 +13,7 @@ npm i @leofcoin/storage
 import LeofcoinStorage from '@leofcoin/storage'
 
 const storage = new LeofcoinStorage(name, root)
+await storage.init()
 // stores/returns a value as uint8Array
 
 await storage.put('hello', 'world')
