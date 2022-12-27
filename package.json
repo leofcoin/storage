@@ -2,9 +2,9 @@
   "name": "@leofcoin/storage",
   "version": "3.2.1",
   "exports": {
-    ".": "./dist/storage.js",
-    "./browser-store": "./dist/brower-store.js",
-    "./store": "./dist/store.js"
+    ".": "./exports/storage.js",
+    "./browser-store": "./exports/brower-store.js",
+    "./store": "./exports/store.js"
   },
   "type": "module",
   "scripts": {
