@@ -1,22 +1,24 @@
 {
   "name": "@leofcoin/storage",
   "version": "3.2.0",
-  "main": "./src/storage.js",
+  "exports": {
+    ".": "./dist/storage.js",
+    "./browser-store": "./dist/brower-store.js",
+    "./store": "./dist/store.js"
+  },
   "type": "module",
   "scripts": {
     "build": "npm run c",
     "c": "rollup -c",
-    "demo": "jsproject --serve ./ --port 5469",
+    "serve": "jsproject --serve ./ --port 5469",
     "test": "node test.js"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "rollup": "^2.70.2",
-    "rollup-plugin-modify": "^3.0.0",
     "tape": "^5.0.1"
   },
   "repository": {
@@ -31,7 +33,7 @@
   "dependencies": {
     "@vandeurenglenn/base32": "^1.1.0",
     "@vandeurenglenn/base58": "^1.1.0",
-    "browser-level": "^1.0.1",
-    "classic-level": "^1.2.0"
+    "classic-level": "^1.2.0",
+    "idb": "^7.1.1"
   }
 }

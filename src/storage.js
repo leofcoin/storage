@@ -15,7 +15,6 @@ export default class LeofcoinStorage {
   }
 
   async get(key) {
-    if (!key) return this.query()
     if (typeof key === 'object') return this.many('get', key);
     return this.db.get(new Path(key))
   }
@@ -48,25 +47,11 @@ export default class LeofcoinStorage {
   }
 
   keys(limit = -1) {
-    return this.db.keys({limit})
-  }
-
-  async #queryJob(key) {
-    const value = await this.db.get(key)
-    return { key, value }
-  }
-
-  async query() {
-    const keys = await this.keys()
-    let promises = []
-    for (const key of keys) {
-      promises.push(this.#queryJob(key))
-    }
-    return Promise.all(promises)
+    return this.db.keys(limit)
   }
 
   async values(limit = -1) {
-    return this.db.values({limit})
+    return this.db.values(limit)
   }
 
   async many(type, _value) {
@@ -86,15 +71,19 @@ export default class LeofcoinStorage {
 
   async size() {
     let size = 0
-    const query = await this.query()
-    for (const item of query) {
-      size += item.value.length
+    const query = await this.db.iterate()
+    for await (const item of query) {
+      size += item.value ? item.value.length : item[1].length
     }
     return size
   }
 
   async clear() {
     return this.db.clear()
+  }
+
+  async iterate() {
+    return this.db.iterate()
   }
 
 }

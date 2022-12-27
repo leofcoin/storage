@@ -1,55 +1,69 @@
-import { BrowserLevel } from 'browser-level'
+import { openDB } from 'idb/with-async-ittr'
+import KeyPath from './path.js'
+import KeyValue from './value.js'
 
 export default class Store {
-  constructor(name = 'storage', root, version = 'v1.0.0') {
+  constructor(name = 'storage', root = '.leofcoin', version = 1) {
+    this.version = version
     this.name = name
     this.root = root
-    this.version = version
-
-    this.db = new BrowserLevel(
-      this.name,
-      { valueEncoding: 'view'}
-    )
+    this.db = openDB(`${root}/${name}`, version, {
+      upgrade(db) {
+        db.createObjectStore(name);
+      }
+    })
   }
 
   toKeyPath(key) {
-    return key ? key.toString('base32') : key
+    if (!key.isKeyPath()) key = new KeyPath(key)
+    return key.toString('base32')
   }
-
+  
   toKeyValue(value) {
+    if (!value.isKeyValue()) value = new KeyValue(value)
     return value.uint8Array
   }
 
   async get(key) {
-    return this.db.get(this.toKeyPath(key))
+    return (await this.db).get(this.name, this.toKeyPath(key))
   }
 
   async put(key, value) {
-    return this.db.put(this.toKeyPath(key), this.toKeyValue(value))
+    return (await this.db).put(this.name, this.toKeyValue(value), this.toKeyPath(key))
   }
 
   async delete(key) {
-    return this.db.del(this.toKeyPath(key))
+    return (await this.db).delete(this.name, this.toKeyPath(key))
   }
 
   async clear() {
-    return this.db.clear()
+    return (await this.db).clear(this.name)
   }
 
   async values(limit = -1) {
     const values = []
-    for await (const value of this.db.values({limit})) {
-      values.push(value)
+    const tx = (await this.db).transaction(this.name);
+    
+    for await (const cursor of tx.store) {
+      values.push(cursor.value)
+      if (limit && values.length === limit) return values      
     }
     return values
   }
 
   async keys(limit = -1) {
     const keys = []
-    for await (const key of this.db.keys({limit})) {
-      keys.push(key)
+    const tx = (await this.db).transaction(this.name);
+
+    for await (const cursor of tx.store) {
+      keys.push(cursor.key)
+      if (limit && keys.length === limit) return keys      
     }
     return keys
+  }
+
+  async iterate() {
+    return (await this.db).transaction(this.name).store
   }
 
 }

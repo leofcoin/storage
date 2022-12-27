@@ -79,18 +79,27 @@ storage.keys()
 returns: Promise()&lt;Array&gt;
 
 ```js
-storage.values()
+storage.values(limit)
 ```
 
 ## build for browser
-webpack
+rollup
 ```js
-module.exports = {
-  ...
+import resolve from '@rollup/plugin-node-resolve'
+export default [{
+  input: './node_modules/@leofcoin/src/storage.js',
+  output: {
+    file: 'dist/storage.js',
+    format: 'es'
+  }
+}, {
+  input: './node_modules/@leofcoin/src/browser-store.js',
+  output: {
+    file: 'dist/browser-store.js',
+    format: 'es'
+  },
   plugins: [
-      new webpack.ProvidePlugin({
-             process: 'process/browser',
-      }),
-  ],
-}
+    resolve()
+  ]
+}]
 ```

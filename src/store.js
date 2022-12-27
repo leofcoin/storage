@@ -1,5 +1,7 @@
 import { join } from 'path'
 import { init } from './utils.js'
+import KeyPath from './path.js'
+import KeyValue from './value.js'
 import { ClassicLevel } from 'classic-level'
 
 export default class Store {
@@ -12,10 +14,12 @@ export default class Store {
   }
 
   toKeyPath(key) {
-    return key ? key.toString('base32') : key
+    if (!key.isKeyPath()) key = new KeyPath(key)
+    return key.toString('base32')
   }
-
+  
   toKeyValue(value) {
+    if (!value.isKeyValue()) value = new KeyValue(value)
     return value.uint8Array
   }
 
@@ -49,6 +53,15 @@ export default class Store {
       keys.push(key)
     }
     return keys
+  }
+
+    /**
+     * 
+     * @param {object} options {  limit, gt, lt, reverse }
+     * @returns 
+     */
+  iterate(options) {
+    return this.db.iterator(options)
   }
 
 }

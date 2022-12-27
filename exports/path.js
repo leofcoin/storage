@@ -1,18 +1,18 @@
-import { decode, encode } from './encoding.js'
+import { encode, decode } from './encoding.js';
 
-const pathSepS = '/'
-export default class KeyPath {
+const pathSepS = '/';
+class KeyPath {
 
   /**
    * @param {string | Uint8Array} input
    */
   constructor(input) {
     if (typeof input === 'string') {
-      this.uint8Array = encode(input)
+      this.uint8Array = encode(input);
     } else if (input instanceof Uint8Array) {
-      this.uint8Array = input
+      this.uint8Array = input;
     } else if (input instanceof KeyPath) {
-      this.uint8Array = input.uint8Array
+      this.uint8Array = input.uint8Array;
     } else {
       throw new Error('Invalid keyPath, should be a String, Uint8Array or KeyPath')
     }
@@ -48,3 +48,5 @@ export default class KeyPath {
   }
 
 }
+
+export { KeyPath as default };
