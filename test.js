@@ -17,7 +17,7 @@ test('@leofcoin/storage', async tape => {
   tape.ok(await store.has('hello'), 'can put value')
 
   const value = await store.get('hello')
-  tape.ok(Boolean('world' === value.toString()), 'can get value')
+  tape.ok(Boolean('world' === new TextDecoder().decode(value)), 'can get value')
 
   const keys = await store.keys()
   tape.ok(keys.length > 0, 'can get keys')

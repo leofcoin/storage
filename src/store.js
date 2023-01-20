@@ -23,8 +23,12 @@ export default class Store {
     return value.uint8Array
   }
 
+  toUint8Array(buffer) {
+    return Buffer.isBuffer(buffer) ? new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength / Uint8Array.BYTES_PER_ELEMENT) : buffer
+  }
+
   async get(key) {
-    return this.db.get(this.toKeyPath(key))
+    return this.toUint8Array(await this.db.get(this.toKeyPath(key))) 
   }
 
   async put(key, value) {
@@ -42,7 +46,7 @@ export default class Store {
   async values(limit = -1) {
     const values = []
     for await (const value of this.db.values({limit})) {
-      values.push(value)
+      values.push(this.toUint8Array(value))
     }
     return values
   }

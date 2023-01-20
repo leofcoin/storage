@@ -150,7 +150,6 @@ class LeofcoinStorage {
   async size() {
     let size = 0;
     const query = await this.db.iterate();
-    console.log(query);
     for await (const item of query) {
       size += item.value ? item.value.length : item[1].length;
     }
