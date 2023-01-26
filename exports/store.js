@@ -109,7 +109,7 @@ class Store {
 
   toKeyPath(key) {
     if (!key.isKeyPath()) key = new KeyPath(key);
-    return key.toString('base32')
+    return key.toString()
   }
   
   toKeyValue(value) {

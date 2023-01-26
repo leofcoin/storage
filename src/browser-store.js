@@ -2,7 +2,7 @@ import { openDB } from 'idb/with-async-ittr'
 import KeyPath from './path.js'
 import KeyValue from './value.js'
 
-export default class Store {
+export default class BrowerStore {
   constructor(name = 'storage', root = '.leofcoin', version = 1) {
     this.version = version
     this.name = name
