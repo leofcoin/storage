@@ -35,6 +35,7 @@
     "@vandeurenglenn/base32": "^1.1.0",
     "@vandeurenglenn/base58": "^1.1.0",
     "classic-level": "^1.2.0",
-    "idb": "^7.1.1"
+    "idb": "^7.1.1",
+    "mkdirp": "^2.1.3"
   }
 }

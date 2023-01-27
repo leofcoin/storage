@@ -1,22 +1,20 @@
 import { join } from 'path';
-import { homedir, platform } from 'os';
+import { homedir } from 'os';
 import { readdirSync } from 'fs';
-import { execSync } from 'child_process';
+import { mkdirp } from 'mkdirp';
 import KeyValue from './value.js';
 import { ClassicLevel } from 'classic-level';
 
-const mkdirp = path => execSync(`mkdir "${platform() === 'win32' ? path.replace(/\//g, '\\') : path}"`);
-
 const init = (root, home = true) => {
-  let _root;
+  let _root = root;
   if (home) _root = join(homedir(), root);
-    if (readdirSync) try {
-      readdirSync(_root);
-    } catch (e) {
-      mkdirp(_root);
-    }
+  if (readdirSync) try {
+    readdirSync(_root);
+  } catch (e) {
+    mkdirp(_root);
+  }
 
-    return _root
+  return _root
 };
 
 // import base32 from '@vandeurenglenn/base32'
