@@ -2,12 +2,20 @@
   "name": "@leofcoin/storage",
   "version": "3.5.0",
   "exports": {
-    ".": "./exports/storage.js",
-    "./browser-store": "./exports/brower-store.js",
-    "./store": "./exports/store.js"
+    ".": {
+      "import": "./exports/storage.js",
+      "types": "./exports/types/storages.d.ts"
+    },
+    "./brower-store": {
+      "import": "./exports/brower-store.js",
+      "types": "./exports/types/brower-store.d.ts"
+    },
+    "./store": {
+      "import": "./exports/store.js",
+      "types": "./exports/types/store.d.ts"
+    }
   },
   "type": "module",
-  "types": "./index.d.ts",
   "scripts": {
     "build": "npm run c",
     "c": "rollup -c",
