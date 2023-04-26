@@ -1,11 +1,9 @@
 import { decode, encode } from './encoding.js'
 
 export default class KeyValue {
+  uint8Array: Uint8Array
 
-  /**
-   * @param {string | Uint8Array} input
-   */
-  constructor(input) {
+  constructor(input: string | Uint8Array | KeyValue) {
     if (typeof input === 'string') {
       this.uint8Array = encode(input)
     } else if (input instanceof Uint8Array) {
@@ -17,18 +15,12 @@ export default class KeyValue {
     }
   }
 
-  isKeyValue() {
+  isKeyValue():boolean {
     return true
   }
-
-  /**
-   * Convert to the string representation
-   *
-   * @param {import('uint8arrays/to-string').SupportedEncodings} [encoding='utf8'] - The encoding to use.
-   * @returns {string}
-   */
-  toString(encoding = 'utf8') {
-    return decode(this.uint8Array, encoding)
+  
+  toString(): string {
+    return decode(this.uint8Array)
   }
 
 }

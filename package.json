@@ -19,8 +19,12 @@
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^11.1.0",
+    "@types/node": "^18.16.1",
+    "@types/semver": "^7.3.13",
     "rollup": "^2.70.2",
-    "tape": "^5.0.1"
+    "tape": "^5.0.1",
+    "tslib": "^2.5.0"
   },
   "repository": {
     "type": "git",

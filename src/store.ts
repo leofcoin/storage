@@ -5,6 +5,11 @@ import KeyValue from './value.js'
 import { ClassicLevel } from 'classic-level'
 
 export default class Store {
+  db: ClassicLevel
+  name: string
+  root: string
+  version: string
+  
   constructor(name = 'storage', root, version = 'v1.0.0') {
     this.name = name
     this.root = init(root)
@@ -64,7 +69,7 @@ export default class Store {
      * @param {object} options {  limit, gt, lt, reverse }
      * @returns 
      */
-  iterate(options) {
+  iterate(options?) {
     return this.db.iterator(options)
   }
 

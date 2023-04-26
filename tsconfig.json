@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "module": "esnext",
+      "target": "esnext",
+      "outDir": "./exports",
+      "moduleResolution":"nodenext",
+      "declaration": true,
+      "declarationDir": "./exports/typings",
+      "allowJs": true,
+      "allowSyntheticDefaultImports": true,    
+      "resolveJsonModule": true
+    },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": ["./node_modules"]
+}

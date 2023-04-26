@@ -1,7 +1,12 @@
+import BrowerStore from './browser-store.js'
 import Path from './path.js'
+import Store from './store.js'
 import KeyValue from './value.js'
 
 export default class LeofcoinStorage {
+  name: string
+  root: string
+  db: Store | BrowerStore
 
   constructor(name = 'storage', root = '.leofcoin') {
     this.name = name

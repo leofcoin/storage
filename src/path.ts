@@ -1,12 +1,11 @@
 import { decode, encode } from './encoding.js'
 
 const pathSepS = '/'
-export default class KeyPath {
 
-  /**
-   * @param {string | Uint8Array} input
-   */
-  constructor(input) {
+export default class KeyPath {
+  uint8Array: Uint8Array
+
+  constructor(input: string | Uint8Array | KeyPath) {
     if (typeof input === 'string') {
       this.uint8Array = encode(input)
     } else if (input instanceof Uint8Array) {
@@ -22,20 +21,12 @@ export default class KeyPath {
     return true
   }
 
-  /**
-   * Convert to the string representation
-   *
-   * @param {import('uint8arrays/to-string').SupportedEncodings} [encoding='utf8'] - The encoding to use.
-   * @returns {string}
-   */
-  toString(encoding = 'hex') {
-    return decode(this.uint8Array, encoding)
+  toString(): string {
+    return decode(this.uint8Array)
   }
 
   /**
    * Returns the `list` representation of this path.
-   *
-   * @returns string[]
    *
    * @example
    * ```js
@@ -43,7 +34,7 @@ export default class KeyPath {
    * // => ['Comedy', 'MontyPythong', 'Actor:JohnCleese']
    * ```
    */
-  list() {
+  list(): string[] {
     return this.toString().split(pathSepS).slice(1)
   }
 

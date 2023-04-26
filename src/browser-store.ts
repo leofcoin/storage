@@ -3,11 +3,16 @@ import KeyPath from './path.js'
 import KeyValue from './value.js'
 
 export default class BrowerStore {
-  constructor(name = 'storage', root = '.leofcoin', version = 1) {
+  db
+  name: string
+  root: string
+  version: string
+
+  constructor(name = 'storage', root = '.leofcoin', version = '1') {
     this.version = version
     this.name = name
     this.root = root
-    this.db = openDB(`${root}/${name}`, version, {
+    this.db = openDB(`${root}/${name}`, Number(version), {
       upgrade(db) {
         db.createObjectStore(name);
       }
