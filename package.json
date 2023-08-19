@@ -4,7 +4,7 @@
   "exports": {
     ".": {
       "import": "./exports/storage.js",
-      "types": "./exports/types/storages.d.ts"
+      "types": "./exports/types/storage.d.ts"
     },
     "./brower-store": {
       "import": "./exports/brower-store.js",
