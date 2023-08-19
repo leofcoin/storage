@@ -5,7 +5,7 @@ export default class LeofcoinStorage {
     root: string;
     db: Store | BrowerStore;
     constructor(name?: string, root?: string);
-    init(name: any, root: any): Promise<void>;
+    init(): Promise<void>;
     get(key: any): Promise<any>;
     /**
      *

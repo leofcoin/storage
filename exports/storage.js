@@ -9,7 +9,7 @@ class LeofcoinStorage {
         this.name = name;
         this.root = root;
     }
-    async init(name, root) {
+    async init() {
         const importee = await import(globalThis.navigator ? './browser-store.js' : './store.js');
         const Store = importee.default;
         this.db = new Store(this.name, this.root);
