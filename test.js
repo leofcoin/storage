@@ -1,4 +1,4 @@
-import m from './src/storage.js'
+import m from './exports/storage.js'
 import test from 'tape'
 
 let store;
