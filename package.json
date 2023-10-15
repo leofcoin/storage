@@ -15,6 +15,9 @@
       "types": "./exports/store.d.ts"
     }
   },
+  "files": [
+    "exports"
+  ],
   "type": "module",
   "scripts": {
     "build": "npm run c",
