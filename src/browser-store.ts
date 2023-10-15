@@ -1,9 +1,12 @@
-import { openDB } from 'idb/with-async-ittr'
+import { IDBPDatabase, openDB } from 'idb/with-async-ittr'
 import KeyPath from './path.js'
 import KeyValue from './value.js'
 
+export declare type KeyInput = string | Uint8Array | KeyPath
+export declare type ValueInput = string | Uint8Array | KeyValue
+
 export default class BrowerStore {
-  db
+  db: Promise<IDBPDatabase<unknown>>
   name: string
   root: string
   version: string
@@ -19,25 +22,26 @@ export default class BrowerStore {
     })
   }
 
-  toKeyPath(key) {
-    if (!key.isKeyPath()) key = new KeyPath(key)
-    return key.toString('base32')
+  toKeyPath(key: KeyInput) {
+    if (key !instanceof KeyPath) key = new KeyPath(key)
+    return key.toString()
   }
   
-  toKeyValue(value) {
-    if (!value.isKeyValue()) value = new KeyValue(value)
+  toKeyValue(value: ValueInput) {
+    if (value !instanceof KeyValue) value = new KeyValue(value)
+    // @ts-ignore
     return value.uint8Array
   }
 
-  async get(key) {
+  async get(key: KeyInput) {
     return (await this.db).get(this.name, this.toKeyPath(key))
   }
 
-  async put(key, value) {
+  async put(key: KeyInput, value: ValueInput) {
     return (await this.db).put(this.name, this.toKeyValue(value), this.toKeyPath(key))
   }
 
-  async delete(key) {
+  async delete(key: KeyInput) {
     return (await this.db).delete(this.name, this.toKeyPath(key))
   }
 
