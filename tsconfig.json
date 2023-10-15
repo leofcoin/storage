@@ -1,15 +1,11 @@
 {
     "compilerOptions": {
-      "module": "esnext",
-      "target": "esnext",
+      "module": "NodeNext",
       "outDir": "./exports",
-      "moduleResolution":"nodenext",
+      "moduleResolution":"NodeNext",
       "declaration": true,
-      "declarationDir": "./exports/types",
+      "declarationDir": "./exports",
       "emitDeclarationOnly": true,
-      "allowJs": true,
-      "allowSyntheticDefaultImports": true,    
-      "resolveJsonModule": true
     },
   "include": [
     "./src/**/*"

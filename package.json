@@ -4,15 +4,15 @@
   "exports": {
     ".": {
       "import": "./exports/storage.js",
-      "types": "./exports/types/storage.d.ts"
+      "types": "./exports/storage.d.ts"
     },
     "./brower-store": {
       "import": "./exports/brower-store.js",
-      "types": "./exports/types/brower-store.d.ts"
+      "types": "./exports/brower-store.d.ts"
     },
     "./store": {
       "import": "./exports/store.js",
-      "types": "./exports/types/store.d.ts"
+      "types": "./exports/store.d.ts"
     }
   },
   "type": "module",
