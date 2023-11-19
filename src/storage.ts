@@ -1,7 +1,9 @@
-import BrowerStore from './browser-store.js'
+import type BrowerStore from './browser-store.js'
 import Path from './path.js'
-import Store from './store.js'
+import type Store from './store.js'
 import KeyValue from './value.js'
+
+const isBrowser = globalThis.navigator ? true : false
 
 export default class LeofcoinStorage {
   name: string
@@ -14,9 +16,14 @@ export default class LeofcoinStorage {
   }
 
   async init() {
-    const importee = await import(globalThis.navigator ? './browser-store.js' : './store.js')
-    const Store = importee.default
-    this.db = new Store(this.name, this.root);
+    const importee = await import(
+      isBrowser ? './browser-store.js' : './store.js'
+    )
+    this.db = new importee.default();
+    if (!isBrowser) {
+      // @ts-ignore
+      await this.db.init(this.name, this.root)
+    }
   }
 
   async get(key) {
@@ -93,3 +100,4 @@ export default class LeofcoinStorage {
   }
 
 }
+export { LeofcoinStorage as Storage }

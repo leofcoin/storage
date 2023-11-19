@@ -9,10 +9,10 @@ export default class Store {
   name: string
   root: string
   version: string
-  
-  constructor(name = 'storage', root, version = 'v1.0.0') {
+
+  async init(name, root, version) {
     this.name = name
-    this.root = init(root)
+    this.root = await init(root)
     this.version = version
 
     this.db = new ClassicLevel(join(this.root, this.name), { valueEncoding: 'view'})

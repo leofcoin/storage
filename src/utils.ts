@@ -1,16 +1,14 @@
-import { homedir, platform } from 'os'
+import { homedir } from 'os'
 import { join } from 'path'
-import { readdirSync } from 'fs'
-import { mkdirp } from 'mkdirp'
+import { readdir, mkdir } from 'fs/promises'
 
-export const init = (root, home = true) => {
+export const init = async (root: string, home = true) => {
   let _root = root
   if (home) _root = join(homedir(), root)
-  if (readdirSync) try {
-    readdirSync(_root)
+  if (readdir) try {
+    await readdir(_root)
   } catch (e) {
-    mkdirp(_root)
+    await mkdir(_root, { recursive: true })
   }
-
   return _root
 }
