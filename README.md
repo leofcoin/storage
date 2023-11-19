@@ -1,6 +1,7 @@
 # LeofcoinStorage
 
 >
+[![CodeQL](https://github.com/leofcoin/storage/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/leofcoin/storage/actions/workflows/codeql-analysis.yml)
 
 ## install
 ```sh
