@@ -15,25 +15,27 @@ export default class Store {
     this.root = await init(root)
     this.version = version
 
-    this.db = new ClassicLevel(join(this.root, this.name), { valueEncoding: 'view'})
+    this.db = new ClassicLevel(join(this.root, this.name), { valueEncoding: 'view' })
   }
 
   toKeyPath(key) {
     if (!key.isKeyPath()) key = new KeyPath(key)
     return key.toString()
   }
-  
+
   toKeyValue(value) {
     if (!value.isKeyValue()) value = new KeyValue(value)
     return value.uint8Array
   }
 
   toUint8Array(buffer) {
-    return Buffer.isBuffer(buffer) ? new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength / Uint8Array.BYTES_PER_ELEMENT) : buffer
+    return Buffer.isBuffer(buffer)
+      ? new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength / Uint8Array.BYTES_PER_ELEMENT)
+      : buffer
   }
 
   async get(key) {
-    return this.toUint8Array(await this.db.get(this.toKeyPath(key))) 
+    return this.toUint8Array(await this.db.get(this.toKeyPath(key)))
   }
 
   async put(key, value) {
@@ -50,7 +52,7 @@ export default class Store {
 
   async values(limit = -1) {
     const values = []
-    for await (const value of this.db.values({limit})) {
+    for await (const value of this.db.values({ limit })) {
       values.push(this.toUint8Array(value))
     }
     return values
@@ -58,19 +60,18 @@ export default class Store {
 
   async keys(limit = -1) {
     const keys = []
-    for await (const key of this.db.keys({limit})) {
+    for await (const key of this.db.keys({ limit })) {
       keys.push(key)
     }
     return keys
   }
 
-    /**
-     * 
-     * @param {object} options {  limit, gt, lt, reverse }
-     * @returns 
-     */
+  /**
+   *
+   * @param {object} options {  limit, gt, lt, reverse }
+   * @returns
+   */
   iterate(options?) {
     return this.db.iterator(options)
   }
-
 }

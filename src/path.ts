@@ -16,7 +16,7 @@ export default class KeyPath {
       throw new Error('Invalid keyPath, should be a String, Uint8Array or KeyPath')
     }
   }
-  
+
   isKeyPath() {
     return true
   }
@@ -37,5 +37,4 @@ export default class KeyPath {
   list(): string[] {
     return this.toString().split(pathSepS).slice(1)
   }
-
 }

@@ -8,47 +8,44 @@ const isBrowser = globalThis.navigator ? true : false
 export default class LeofcoinStorage {
   name: string
   root: string
+  version: number
   db: Store | BrowerStore
 
-  constructor(name = 'storage', root = '.leofcoin') {
+  constructor(name = 'storage', root = '.leofcoin', version = 1) {
     this.name = name
     this.root = root
+    this.version = 1
   }
 
   async init() {
-    const importee = await import(
-      isBrowser ? './browser-store.js' : './store.js'
-    )
-    this.db = new importee.default();
-    if (!isBrowser) {
-      // @ts-ignore
-      await this.db.init(this.name, this.root)
-    }
+    const importee = await import(isBrowser ? './browser-store.js' : './store.js')
+    this.db = new importee.default()
+    await this.db.init(this.name, this.root, this.version)
   }
 
   async get(key) {
-    if (typeof key === 'object') return this.many('get', key);
+    if (typeof key === 'object') return this.many('get', key)
     return this.db.get(new Path(key))
   }
-  
+
   /**
-   * 
-   * @param {*} key 
-   * @param {*} value 
+   *
+   * @param {*} key
+   * @param {*} value
    * @returns Promise
    */
   put(key, value) {
-    if (typeof key === 'object') return this.many('put', key);
-    return this.db.put(new Path(key), new KeyValue(value));
+    if (typeof key === 'object') return this.many('put', key)
+    return this.db.put(new Path(key), new KeyValue(value))
   }
 
   async has(key) {
-    if (typeof key === 'object') return this.many('has', key);
+    if (typeof key === 'object') return this.many('has', key)
 
     try {
       const has = await this.db.get(new Path(key))
 
-      return Boolean(has);
+      return Boolean(has)
     } catch (e) {
       return false
     }
@@ -67,7 +64,7 @@ export default class LeofcoinStorage {
   }
 
   async many(type, _value) {
-    const jobs = [];
+    const jobs = []
 
     for (const key of Object.keys(_value)) {
       jobs.push(this[type](key, _value[key]))
@@ -98,6 +95,5 @@ export default class LeofcoinStorage {
   async iterate() {
     return this.db.iterate()
   }
-
 }
 export { LeofcoinStorage as Storage }

@@ -11,24 +11,24 @@ export default class BrowerStore {
   root: string
   version: string
 
-  constructor(name = 'storage', root = '.leofcoin', version = '1') {
+  init(name = 'storage', root = '.leofcoin', version = '1') {
     this.version = version
     this.name = name
     this.root = root
     this.db = openDB(`${root}/${name}`, Number(version), {
       upgrade(db) {
-        db.createObjectStore(name);
+        db.createObjectStore(name)
       }
     })
   }
 
   toKeyPath(key: KeyInput) {
-    if (key !instanceof KeyPath) key = new KeyPath(key)
+    if (key! instanceof KeyPath) key = new KeyPath(key)
     return key.toString()
   }
-  
+
   toKeyValue(value: ValueInput) {
-    if (value !instanceof KeyValue) value = new KeyValue(value)
+    if (value! instanceof KeyValue) value = new KeyValue(value)
     // @ts-ignore
     return value.uint8Array
   }
@@ -51,22 +51,22 @@ export default class BrowerStore {
 
   async values(limit = -1) {
     const values = []
-    const tx = (await this.db).transaction(this.name);
-    
+    const tx = (await this.db).transaction(this.name)
+
     for await (const cursor of tx.store) {
       values.push(cursor.value)
-      if (limit && values.length === limit) return values      
+      if (limit && values.length === limit) return values
     }
     return values
   }
 
   async keys(limit = -1) {
     const keys = []
-    const tx = (await this.db).transaction(this.name);
+    const tx = (await this.db).transaction(this.name)
 
     for await (const cursor of tx.store) {
       keys.push(cursor.key)
-      if (limit && keys.length === limit) return keys      
+      if (limit && keys.length === limit) return keys
     }
     return keys
   }
@@ -74,5 +74,4 @@ export default class BrowerStore {
   async iterate() {
     return (await this.db).transaction(this.name).store
   }
-
 }

@@ -15,12 +15,11 @@ export default class KeyValue {
     }
   }
 
-  isKeyValue():boolean {
+  isKeyValue(): boolean {
     return true
   }
-  
+
   toString(): string {
     return decode(this.uint8Array)
   }
-
 }
