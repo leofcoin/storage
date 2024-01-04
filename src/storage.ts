@@ -3,7 +3,7 @@ import Path from './path.js'
 import type Store from './store.js'
 import KeyValue from './value.js'
 
-const isBrowser = globalThis.navigator ? true : false
+const isBrowser = globalThis.process?.versions?.node ? false : true
 
 export default class LeofcoinStorage {
   name: string
@@ -23,7 +23,7 @@ export default class LeofcoinStorage {
     await this.db.init(this.name, this.root, this.version)
   }
 
-  async get(key) {
+  async get(key: Path | string | Uint8Array) {
     if (typeof key === 'object') return this.many('get', key)
     return this.db.get(new Path(key))
   }
