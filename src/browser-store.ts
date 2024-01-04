@@ -1,4 +1,4 @@
-import { IDBPDatabase, openDB } from 'idb/with-async-ittr'
+import { IDBPDatabase, openDB } from 'idb'
 import KeyPath from './path.js'
 import KeyValue from './value.js'
 
