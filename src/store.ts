@@ -34,6 +34,15 @@ export default class Store {
       : buffer
   }
 
+  async has(key) {
+    try {
+      await this.get(key)
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
   async get(key) {
     return this.toUint8Array(await this.db.get(this.toKeyPath(key)))
   }

@@ -1,9 +1,8 @@
 import type BrowerStore from './browser-store.js'
 import Path from './path.js'
 import type Store from './store.js'
+import { isBrowser } from './utils.js'
 import KeyValue from './value.js'
-
-const isBrowser = globalThis.process?.versions?.node ? false : true
 
 export default class LeofcoinStorage {
   name: string
@@ -43,7 +42,7 @@ export default class LeofcoinStorage {
     if (typeof key === 'object') return this.many('has', key)
 
     try {
-      const has = await this.db.get(new Path(key))
+      const has = await this.db.has(new Path(key))
 
       return Boolean(has)
     } catch (e) {
