@@ -99,7 +99,7 @@ export default class BrowerStore {
     const keys = []
 
     for await (const cursor of this.db.keys()) {
-      keys.push(new Uint8Array(await (await cursor.getFile()).arrayBuffer()))
+      keys.push(cursor)
       if (limit && keys.length === limit) return keys
     }
     return keys
