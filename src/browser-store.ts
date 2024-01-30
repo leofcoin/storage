@@ -1,11 +1,13 @@
-import { IDBPDatabase, openDB } from 'idb'
 import KeyPath from './path.js'
 import KeyValue from './value.js'
-
+import '@vandeurenglenn/debug'
 export declare type KeyInput = string | Uint8Array | KeyPath
 export declare type ValueInput = string | Uint8Array | KeyValue
 
+const debug = globalThis.createDebugger('leofcoin/storage')
+
 const opfsRoot = await navigator.storage.getDirectory()
+
 export default class BrowerStore {
   db: FileSystemDirectoryHandle
   name: string
@@ -43,6 +45,7 @@ export default class BrowerStore {
   }
 
   async has(key: KeyInput) {
+    debug(`has ${this.toKeyPath(key)}`)
     try {
       await this.db.getFileHandle(this.toKeyPath(key))
       return true
@@ -52,12 +55,14 @@ export default class BrowerStore {
   }
 
   async get(key: KeyInput) {
+    debug(`get ${this.toKeyPath(key)}`)
     const handle = await this.db.getFileHandle(this.toKeyPath(key))
     const file = await handle.getFile()
     return new Uint8Array(await file.arrayBuffer())
   }
 
   async put(key: KeyInput, value: ValueInput) {
+    debug(`put ${this.toKeyPath(key)}`)
     const handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
     const writeable = handle.createWritable()
     ;(await writeable).write(this.toKeyValue(value))
@@ -65,30 +70,36 @@ export default class BrowerStore {
   }
 
   async delete(key: KeyInput) {
+    debug(`delete ${this.toKeyPath(key)}`)
     return this.db.removeEntry(this.toKeyPath(key))
   }
 
   async clear() {
+    debug(`clear ${this.toKeyPath(key)}`)
     for await (const key of this.db.keys()) {
       await this.db.removeEntry(key)
     }
   }
 
   async values(limit = -1) {
-    const values = []
+    debug(`values ${limit}`)
+    let values = []
 
     for await (const cursor of this.db.values()) {
-      values.push(cursor)
+      values.push(cursor.getFile)
       if (limit && values.length === limit) return values
     }
-    return values
+
+    values = await Promise.all(values)
+    return Promise.all(values.map((file) => file.arrayBuffer))
   }
 
   async keys(limit = -1) {
+    debug(`keys ${limit}`)
     const keys = []
 
     for await (const cursor of this.db.keys()) {
-      keys.push(cursor)
+      keys.push(new Uint8Array(await (await cursor.getFile()).arrayBuffer()))
       if (limit && keys.length === limit) return keys
     }
     return keys
