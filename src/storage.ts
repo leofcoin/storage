@@ -8,18 +8,24 @@ export default class LeofcoinStorage {
   name: string
   root: string
   version: number
+  inWorker: boolean
   db: Store | BrowerStore
 
-  constructor(name = 'storage', root = '.leofcoin', version = 1) {
+  constructor(
+    name = 'storage',
+    root = '.leofcoin',
+    { inWorker = false, version = 1 }: { version?: number; inWorker: boolean }
+  ) {
     this.name = name
     this.root = root
-    this.version = 1
+    this.version = version || 1
+    this.inWorker = inWorker
   }
 
   async init() {
     const importee = await import(isBrowser ? './browser-store.js' : './store.js')
     this.db = new importee.default()
-    await this.db.init(this.name, this.root, this.version)
+    await this.db.init(this.name, this.root, this.version, this.inWorker)
   }
 
   async get(key: Path | string | Uint8Array) {

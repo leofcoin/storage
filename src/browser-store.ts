@@ -12,20 +12,22 @@ export default class BrowerStore {
   db: FileSystemDirectoryHandle
   name: string
   root: typeof opfsRoot
+  inWorker: boolean
   version: string
 
-  async init(name = 'storage', root = '.leofcoin', version = '1') {
-    console.log('init')
-
+  async init(name = 'storage', root = '.leofcoin', version = '1', inWorker: boolean = false) {
     this.version = version
     this.name = name
     this.root = opfsRoot
-    console.log(`${this.root}/${this.name}`)
+    this.inWorker = inWorker
     let directoryHandle
     try {
       directoryHandle = await opfsRoot.getDirectoryHandle(this.name, {
         create: true
       })
+      if (inWorker) {
+        directoryHandle = await directoryHandle.createSyncAccessHandle()
+      }
     } catch (error) {
       console.error(error)
     }
@@ -56,15 +58,33 @@ export default class BrowerStore {
 
   async get(key: KeyInput) {
     debug(`get ${this.toKeyPath(key)}`)
-    const handle = await this.db.getFileHandle(this.toKeyPath(key))
-    const file = await handle.getFile()
-    return new Uint8Array(await file.arrayBuffer())
+    let handle = await this.db.getFileHandle(this.toKeyPath(key))
+    let readBuffer
+    if (this.inWorker) {
+      handle = await handle.createSyncAccessHandle()
+      const fileSize = handle.getSize()
+      // Read file content to a buffer.
+      const buffer = new DataView(new ArrayBuffer(fileSize))
+      readBuffer = handle.read(buffer, { at: 0 })
+    } else {
+      const file = await handle.getFile()
+      readBuffer = await file.arrayBuffer()
+    }
+
+    handle.close()
+    return new Uint8Array(readBuffer)
   }
 
   async put(key: KeyInput, value: ValueInput) {
     debug(`put ${this.toKeyPath(key)}`)
-    const handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
-    const writeable = handle.createWritable()
+    let handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
+    let writeable
+    if (this.inWorker) {
+      writeable = await handle.createSyncAccessHandle()
+    } else {
+      writeable = await handle.createWritable()
+    }
+
     ;(await writeable).write(this.toKeyValue(value))
     ;(await writeable).close()
   }
