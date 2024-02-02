@@ -107,7 +107,10 @@ export default class BrowerStore {
 
     for await (const cursor of this.db.values()) {
       values.push(cursor.getFile)
-      if (limit && values.length === limit) return values
+      if (limit && values.length === limit) {
+        values = await Promise.all(values)
+        return Promise.all(values.map((file) => file.arrayBuffer))
+      }
     }
 
     values = await Promise.all(values)
