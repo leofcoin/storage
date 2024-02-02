@@ -4,6 +4,15 @@ import type Store from './store.js'
 import { isBrowser } from './utils.js'
 import KeyValue from './value.js'
 
+export declare type DefaultOptions = {
+  inWorker: boolean
+  version: number
+}
+
+const defaultOptions: DefaultOptions = {
+  inWorker: false,
+  version: 1
+}
 export default class LeofcoinStorage {
   name: string
   root: string
@@ -11,11 +20,8 @@ export default class LeofcoinStorage {
   inWorker: boolean
   db: Store | BrowerStore
 
-  constructor(
-    name = 'storage',
-    root = '.leofcoin',
-    { inWorker = false, version = 1 }: { version?: number; inWorker: boolean }
-  ) {
+  constructor(name = 'storage', root = '.leofcoin', options = {}) {
+    const { version, inWorker } = { ...options, ...defaultOptions }
     this.name = name
     this.root = root
     this.version = version || 1
