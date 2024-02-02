@@ -14,6 +14,8 @@ export default class BrowerStore {
   root: typeof opfsRoot
   inWorker: boolean
   version: string
+  busy: boolean
+  queue: []
 
   async init(name = 'storage', root = '.leofcoin', version = '1', inWorker: boolean = false) {
     this.version = version
@@ -75,18 +77,34 @@ export default class BrowerStore {
     return new Uint8Array(readBuffer)
   }
 
-  async put(key: KeyInput, value: ValueInput) {
-    debug(`put ${this.toKeyPath(key)}`)
-    let handle = (await this.db.getFileHandle(this.toKeyPath(key), { create: true })) as FileSystemFileHandle
-    let writeable: FileSystemWritableFileStream
-    if (this.inWorker) {
-      writeable = await handle.createSyncAccessHandle()
-    } else {
-      writeable = await handle.createWritable()
+  async put(key, value) {
+    const put = async (key, value) => {
+      this.busy = true
+      debug(`put ${this.toKeyPath(key)}`)
+      let handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
+      let writeable
+      if (this.inWorker) {
+        writeable = await handle.createSyncAccessHandle()
+      } else {
+        writeable = await handle.createWritable()
+      }
+      console.log(key.toString())
+      ;(await writeable).write(new ArrayBuffer(this.toKeyValue(value)))
+      console.log('writted')
+      ;(await writeable).close()
+      this.busy = false
     }
-
-    ;(await writeable).write(this.toKeyValue(value))
-    ;(await writeable).close()
+    if (this.busy) {
+      const promise = () => new Promise((resolve) => put(key, value))
+      this.queue.push(promise)
+      return promise
+    } else {
+      if (this.queue.length > 0) {
+        const next = this.queue.shift()
+        await next()
+      }
+      return put(key, value)
+    }
   }
 
   async delete(key: KeyInput) {
