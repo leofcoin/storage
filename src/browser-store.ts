@@ -15,7 +15,7 @@ export default class BrowerStore {
   inWorker: boolean
   version: string
   busy: boolean
-  queue: []
+  queue = []
 
   async init(name = 'storage', root = '.leofcoin', version = '1', inWorker: boolean = false) {
     this.version = version
