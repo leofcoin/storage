@@ -66,12 +66,12 @@ export default class BrowerStore {
       // Read file content to a buffer.
       const buffer = new DataView(new ArrayBuffer(fileSize))
       readBuffer = handle.read(buffer, { at: 0 })
+
+      handle.close()
     } else {
       const file = await handle.getFile()
       readBuffer = await file.arrayBuffer()
     }
-
-    handle.close()
     return new Uint8Array(readBuffer)
   }
 
@@ -106,15 +106,15 @@ export default class BrowerStore {
     let values = []
 
     for await (const cursor of this.db.values()) {
-      values.push(cursor.getFile)
+      values.push(cursor.getFile())
       if (limit && values.length === limit) {
         values = await Promise.all(values)
-        return Promise.all(values.map((file) => file.arrayBuffer))
+        return Promise.all(values.map(async (file) => new Uint8Array(await file.arrayBuffer())))
       }
     }
 
     values = await Promise.all(values)
-    return Promise.all(values.map((file) => file.arrayBuffer))
+    return Promise.all(values.map(async (file) => new Uint8Array(await file.arrayBuffer())))
   }
 
   async keys(limit = -1) {
