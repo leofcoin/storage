@@ -20,7 +20,7 @@ export default class BrowerStore {
     this.name = name
     this.root = opfsRoot
     this.inWorker = inWorker
-    let directoryHandle
+    let directoryHandle: FileSystemDirectoryHandle
     try {
       directoryHandle = await opfsRoot.getDirectoryHandle(this.name, {
         create: true
@@ -77,8 +77,8 @@ export default class BrowerStore {
 
   async put(key: KeyInput, value: ValueInput) {
     debug(`put ${this.toKeyPath(key)}`)
-    let handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
-    let writeable
+    let handle = (await this.db.getFileHandle(this.toKeyPath(key), { create: true })) as FileSystemFileHandle
+    let writeable: FileSystemWritableFileStream
     if (this.inWorker) {
       writeable = await handle.createSyncAccessHandle()
     } else {
