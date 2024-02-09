@@ -68,7 +68,6 @@ export default class BrowerStore {
       // Read file content to a buffer.
       const buffer = new DataView(new ArrayBuffer(fileSize))
       readBuffer = handle.read(buffer, { at: 0 })
-
       handle.close()
     } else {
       const file = await handle.getFile()
@@ -77,33 +76,38 @@ export default class BrowerStore {
     return new Uint8Array(readBuffer)
   }
 
-  async put(key, value) {
-    const put = async (key, value) => {
-      this.busy = true
-      debug(`put ${this.toKeyPath(key)}`)
-      let handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
-      let writeable
-      if (this.inWorker) {
-        writeable = await handle.createSyncAccessHandle()
-      } else {
-        writeable = await handle.createWritable()
-      }
-      console.log(key.toString())
-      ;(await writeable).write(new ArrayBuffer(this.toKeyValue(value)))
-      console.log('writted')
-      ;(await writeable).close()
-      this.busy = false
+  async put(key: KeyInput, value: ValueInput) {
+    const promise = () =>
+      new Promise(async (resolve) => {
+        debug(`put ${this.toKeyPath(key)}`)
+        let handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
+        let writeable
+        if (this.inWorker) {
+          writeable = await handle.createSyncAccessHandle()
+        } else {
+          writeable = await handle.createWritable()
+        }
+        ;(await writeable).write(this.toKeyValue(value))
+        ;(await writeable).close()
+        resolve(true)
+      })
+
+    if (this.queue.length > 0 && !this.busy) {
+      this.runQueue()
     }
-    if (this.busy) {
-      const promise = () => new Promise((resolve) => put(key, value))
-      this.queue.push(promise)
-      return promise
+    this.queue.push(promise)
+    this.runQueue()
+    return promise
+  }
+
+  async runQueue() {
+    if (this.queue.length > 0) {
+      this.busy = true
+      const next = this.queue.shift()
+      await next()
+      return this.runQueue()
     } else {
-      if (this.queue.length > 0) {
-        const next = this.queue.shift()
-        await next()
-      }
-      return put(key, value)
+      this.busy = false
     }
   }
 
