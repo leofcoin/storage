@@ -90,11 +90,11 @@ export default class BrowerStore {
         ;(await writeable).write(this.toKeyValue(value))
         ;(await writeable).close()
         resolve(true)
-      })
 
-    if (this.queue.length > 0 && !this.busy) {
-      this.runQueue()
-    }
+        if (this.queue.length > 0 && !this.busy) {
+          this.runQueue()
+        }
+      })
     this.queue.push(promise)
     this.runQueue()
     return promise
