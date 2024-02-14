@@ -123,29 +123,21 @@ export default class BrowerStore {
     }
   }
 
-  async values(limit = -1) {
-    debug(`values ${limit}`)
+  async values() {
     let values = []
 
     for await (const cursor of this.db.values()) {
       values.push(cursor.getFile())
-      if (limit && values.length === limit) {
-        values = await Promise.all(values)
-        return Promise.all(values.map(async (file) => new Uint8Array(await file.arrayBuffer())))
-      }
     }
 
     values = await Promise.all(values)
     return Promise.all(values.map(async (file) => new Uint8Array(await file.arrayBuffer())))
   }
 
-  async keys(limit = -1) {
-    debug(`keys ${limit}`)
+  async keys() {
     const keys = []
-
     for await (const cursor of this.db.keys()) {
       keys.push(cursor)
-      if (limit && keys.length === limit) return keys
     }
     return keys
   }
