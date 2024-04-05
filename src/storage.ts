@@ -77,8 +77,20 @@ export default class LeofcoinStorage {
   async many(type, _value) {
     const jobs = []
 
-    for (const key of Object.keys(_value)) {
-      jobs.push(this[type](key, _value[key]))
+    switch (type) {
+      case 'has':
+      case 'get':
+      case 'delete':
+        for (const key of _value) {
+          jobs.push(this[type](key, _value[key]))
+        }
+        break
+
+      default:
+        for (const key of Object.keys(_value)) {
+          jobs.push(this[type](key, _value[key]))
+        }
+        break
     }
 
     return Promise.all(jobs)
