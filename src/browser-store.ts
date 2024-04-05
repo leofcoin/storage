@@ -28,6 +28,8 @@ export default class BrowerStore {
         create: true
       })
       if (inWorker) {
+        // it's in a worker so that's why typings invalid?
+        // @ts-ignore
         directoryHandle = await directoryHandle.createSyncAccessHandle()
       }
     } catch (error) {
@@ -63,11 +65,16 @@ export default class BrowerStore {
     let handle = await this.db.getFileHandle(this.toKeyPath(key))
     let readBuffer
     if (this.inWorker) {
+      // it's in a worker so that's why typings invalid?
+      // @ts-ignore
       handle = await handle.createSyncAccessHandle()
+      // @ts-ignore
       const fileSize = handle.getSize()
       // Read file content to a buffer.
       const buffer = new DataView(new ArrayBuffer(fileSize))
+      // @ts-ignore
       readBuffer = handle.read(buffer, { at: 0 })
+      // @ts-ignore
       handle.close()
     } else {
       const file = await handle.getFile()
@@ -83,6 +90,8 @@ export default class BrowerStore {
         let handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
         let writeable
         if (this.inWorker) {
+          // it's in a worker so that's why typings invalid?
+          // @ts-ignore
           writeable = await handle.createSyncAccessHandle()
         } else {
           writeable = await handle.createWritable()
@@ -117,8 +126,8 @@ export default class BrowerStore {
   }
 
   async clear() {
-    debug(`clear ${this.toKeyPath(key)}`)
     for await (const key of this.db.keys()) {
+      debug(`clear ${this.toKeyPath(key)}`)
       await this.db.removeEntry(key)
     }
   }
@@ -127,6 +136,8 @@ export default class BrowerStore {
     let values = []
 
     for await (const cursor of this.db.values()) {
+      // huh? Outdated typings?
+      // @ts-ignore
       values.push(cursor.getFile())
     }
 
