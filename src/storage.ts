@@ -7,31 +7,35 @@ import KeyValue from './value.js'
 export declare type DefaultOptions = {
   inWorker: boolean
   version: number
+  homedir: boolean
 }
 
 const defaultOptions: DefaultOptions = {
   inWorker: false,
-  version: 1
+  version: 1,
+  homedir: true
 }
 export default class LeofcoinStorage {
   name: string
   root: string
   version: number
   inWorker: boolean
+  homedir: boolean
   db: Store | BrowerStore
 
   constructor(name = 'storage', root = '.leofcoin', options = {}) {
-    const { version, inWorker } = { ...options, ...defaultOptions }
+    const { version, inWorker, homedir } = { ...options, ...defaultOptions }
     this.name = name
     this.root = root
     this.version = version || 1
     this.inWorker = inWorker
+    this.homedir = homedir
   }
 
   async init() {
     const importee = await import(isBrowser ? './browser-store.js' : './store.js')
     this.db = new importee.default()
-    await this.db.init(this.name, this.root, this.version, this.inWorker)
+    await this.db.init(this.name, this.root, this.version, this.inWorker, this.homedir)
   }
 
   async get(key: Path | string | Uint8Array) {
