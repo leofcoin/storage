@@ -24,7 +24,7 @@ export default class LeofcoinStorage {
   db: Store | BrowerStore
 
   constructor(name = 'storage', root = '.leofcoin', options = {}) {
-    const { version, inWorker, homedir } = { ...options, ...defaultOptions }
+    const { version, inWorker, homedir } = { ...defaultOptions, ...options }
     this.name = name
     this.root = root
     this.version = version || 1
