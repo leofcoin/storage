@@ -98,24 +98,23 @@ export default class BrowerStore {
         }
         ;(await writeable).write(this.toKeyValue(value))
         ;(await writeable).close()
-        resolve(true)
 
-        if (this.queue.length > 0 && !this.busy) {
-          this.runQueue()
-        }
+        this.runQueue()
+        resolve(true)
       })
+
     this.queue.push(promise)
     this.runQueue()
     return promise
   }
 
   async runQueue() {
-    if (this.queue.length > 0) {
+    if (this.queue.length > 0 && !this.busy) {
       this.busy = true
       const next = this.queue.shift()
       await next()
       return this.runQueue()
-    } else {
+    } else if (this.queue.length === 0 && this.busy) {
       this.busy = false
     }
   }
