@@ -113,6 +113,7 @@ export default class BrowerStore {
       this.busy = true
       const next = this.queue.shift()
       await next()
+      this.busy = false
       return this.runQueue()
     } else if (this.queue.length === 0 && this.busy) {
       this.busy = false
