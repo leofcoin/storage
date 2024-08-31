@@ -145,6 +145,16 @@ export default class BrowerStore {
     return Promise.all(values.map(async (file) => new Uint8Array(await file.arrayBuffer())))
   }
 
+  async size() {
+    let size = 0
+    for await (const cursor of this.db.values()) {
+      // huh? Outdated typings?
+      // @ts-ignore
+      size += (await cursor.getFile()).size
+    }
+    return size
+  }
+
   async keys() {
     const keys = []
     for await (const cursor of this.db.keys()) {

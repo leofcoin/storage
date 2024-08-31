@@ -105,14 +105,8 @@ export default class LeofcoinStorage {
     return keys.length
   }
 
-  async size() {
-    let size = 0
-    const query = await this.db.iterate()
-    for await (const item of query) {
-      // @ts-ignore
-      size += item.value ? item.value.length : item[1].length
-    }
-    return size
+  size() {
+    return this.db.size()
   }
 
   async clear() {

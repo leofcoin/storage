@@ -75,6 +75,14 @@ export default class Store {
     return keys
   }
 
+  async size() {
+    let size = 0
+    for await (const [key, value] of this.db.iterator()) {
+      size += value?.length ?? 0
+    }
+    return size
+  }
+
   /**
    *
    * @param {object} options {  limit, gt, lt, reverse }
