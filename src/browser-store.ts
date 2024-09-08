@@ -60,51 +60,87 @@ export default class BrowerStore {
   }
 
   async get(key: KeyInput) {
-    debug(`get ${this.toKeyPath(key)}`)
-    let handle = await this.db.getFileHandle(this.toKeyPath(key))
-    let readBuffer
-    if (this.inWorker) {
-      // it's in a worker so that's why typings invalid?
-      // @ts-ignore
-      handle = await handle.createSyncAccessHandle()
-      // @ts-ignore
-      const fileSize = handle.getSize()
-      // Read file content to a buffer.
-      const buffer = new DataView(new ArrayBuffer(fileSize))
-      // @ts-ignore
-      readBuffer = handle.read(buffer, { at: 0 })
-      // @ts-ignore
-      handle.close()
-    } else {
-      const file = await handle.getFile()
-      readBuffer = await file.arrayBuffer()
-    }
-    return new Uint8Array(readBuffer)
-  }
-
-  async put(key: KeyInput, value: ValueInput) {
+    let promiseResolve
+    let promiseReject
+    let result = new Promise((resolve, reject) => {
+      promiseResolve = resolve
+      promiseReject = reject
+    })
     const promise = () =>
-      new Promise(async (resolve) => {
-        debug(`put ${this.toKeyPath(key)}`)
-        let handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
-        let writeable
-        if (this.inWorker) {
-          // it's in a worker so that's why typings invalid?
-          // @ts-ignore
-          writeable = await handle.createSyncAccessHandle()
-        } else {
-          writeable = await handle.createWritable()
-        }
-        ;(await writeable).write(this.toKeyValue(value))
-        ;(await writeable).close()
-
-        this.runQueue()
-        resolve(true)
+      new Promise(async (resolve, reject) => {
+        debug(`get ${this.toKeyPath(key)}`)
+        setTimeout(async () => {
+          try {
+            let handle = await this.db.getFileHandle(this.toKeyPath(key))
+            let readBuffer
+            if (this.inWorker) {
+              // it's in a worker so that's why typings invalid?
+              // @ts-ignore
+              handle = await handle.createSyncAccessHandle()
+              // @ts-ignore
+              const fileSize = handle.getSize()
+              // Read file content to a buffer.
+              const buffer = new DataView(new ArrayBuffer(fileSize))
+              // @ts-ignore
+              readBuffer = handle.read(buffer, { at: 0 })
+              // @ts-ignore
+              handle.close()
+            } else {
+              const file = await handle.getFile()
+              readBuffer = await file.arrayBuffer()
+            }
+            this.runQueue()
+            promiseResolve(new Uint8Array(readBuffer))
+            resolve(new Uint8Array(readBuffer))
+          } catch (error) {
+            promiseReject(error)
+            resolve(false)
+          }
+        }, 1)
       })
 
     this.queue.push(promise)
     this.runQueue()
-    return promise
+    return result
+  }
+
+  async put(key: KeyInput, value: ValueInput) {
+    let promiseResolve
+    let promiseReject
+    let result = new Promise((resolve, reject) => {
+      promiseResolve = resolve
+      promiseReject = reject
+    })
+    const promise = () =>
+      new Promise(async (resolve, reject) => {
+        debug(`put ${this.toKeyPath(key)}`)
+        setTimeout(async () => {
+          try {
+            let handle = await this.db.getFileHandle(this.toKeyPath(key), { create: true })
+            let writeable
+            if (this.inWorker) {
+              // it's in a worker so that's why typings invalid?
+              // @ts-ignore
+              writeable = await handle.createSyncAccessHandle()
+            } else {
+              writeable = await handle.createWritable()
+            }
+            ;(await writeable).write(this.toKeyValue(value))
+            ;(await writeable).close()
+
+            this.runQueue()
+            resolve(true)
+            promiseResolve(true)
+          } catch (error) {
+            promiseReject(error)
+            resolve(false)
+          }
+        }, 5)
+      })
+
+    this.queue.push(promise)
+    this.runQueue()
+    return result
   }
 
   async runQueue() {
@@ -124,13 +160,13 @@ export default class BrowerStore {
     return new Promise(async (resolve, reject) => {
       try {
         await this.db.getFileHandle(`${this.toKeyPath(key)}.crswap`)
-        setTimeout(() => resolve(this.delete(key)), 250)
+        setTimeout(() => resolve(this.delete(key)), 5)
       } catch (error) {
         try {
           await this.db.removeEntry(this.toKeyPath(key))
           resolve(true)
         } catch (error) {
-          if (error.name === 'NoModificationAllowedError') setTimeout(() => resolve(this.delete(key)), 250)
+          if (error.name === 'NoModificationAllowedError') setTimeout(() => resolve(this.delete(key)), 5)
           else reject(error)
         }
       }
