@@ -7,7 +7,6 @@ export declare type ValueInput = string | Uint8Array | KeyValue
 const debug = globalThis.createDebugger('leofcoin/storage')
 
 const opfsRoot = await navigator.storage.getDirectory()
-
 export default class BrowerStore {
   db: FileSystemDirectoryHandle
   name: string
@@ -122,13 +121,26 @@ export default class BrowerStore {
 
   async delete(key: KeyInput) {
     debug(`delete ${this.toKeyPath(key)}`)
-    return this.db.removeEntry(this.toKeyPath(key))
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.db.getFileHandle(`${this.toKeyPath(key)}.crswap`)
+        setTimeout(() => resolve(this.delete(key)), 250)
+      } catch (error) {
+        try {
+          await this.db.removeEntry(this.toKeyPath(key))
+          resolve(true)
+        } catch (error) {
+          if (error.name === 'NoModificationAllowedError') setTimeout(() => resolve(this.delete(key)), 250)
+          else reject(error)
+        }
+      }
+    })
   }
 
   async clear() {
     for await (const key of this.db.keys()) {
       debug(`clear ${this.toKeyPath(key)}`)
-      await this.db.removeEntry(key)
+      await this.delete(key)
     }
   }
 
