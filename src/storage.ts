@@ -116,5 +116,8 @@ export default class LeofcoinStorage {
   async iterate() {
     return this.db.iterate()
   }
+  entries(): Promise<[Path, Uint8Array][]> {
+    return this.db.entries()
+  }
 }
 export { LeofcoinStorage as Storage }

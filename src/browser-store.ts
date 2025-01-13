@@ -214,4 +214,21 @@ export default class BrowerStore {
   async iterate() {
     return this.db.entries()
   }
+
+  async entries() {
+    let values = []
+
+    for await (const [key, cursor] of this.db.entries()) {
+      values.push(
+        (async () => {
+          // huh? Outdated typings?
+          // @ts-ignore
+          const file = await cursor.getFile()
+          return [key, new Uint8Array(await file.arrayBuffer())]
+        })()
+      )
+    }
+
+    return Promise.all(values)
+  }
 }

@@ -91,4 +91,12 @@ export default class Store {
   iterate(options?) {
     return this.db.iterator(options)
   }
+
+  async entries(limit = -1) {
+    const entries = []
+    for await (const [key, value] of this.db.iterator({ limit })) {
+      entries.push([key, this.toUint8Array(value)])
+    }
+    return entries
+  }
 }
