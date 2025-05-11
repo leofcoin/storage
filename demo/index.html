@@ -23,16 +23,21 @@
       const test = await storage.get('test')
       console.log(test)
 
-      try {
-        setTimeout(async () => {
-          await storage.delete('test')
-        }, 5000)
-      } catch (error) {
-        console.error(error)
-      }
       // await storage.clear()
 
       console.log(await storage.keys())
+
+      let promises = []
+      for (let i = 1; i <= 500; i++) {
+        promises.push(storage.put(`test${i}`, `world${i}`))
+      }
+      await Promise.all(promises)
+      promises = []
+      for (let i = 1; i <= 500; i++) {
+        promises.push(storage.get(`test${i}`))
+      }
+      await Promise.all(promises)
+      console.log('done')
     </script>
   </head>
   <body></body>
