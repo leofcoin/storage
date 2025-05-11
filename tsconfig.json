@@ -6,6 +6,9 @@
       "declaration": true,
       "declarationDir": "./exports",
       "emitDeclarationOnly": true,
+      "types": [
+        "node"
+      ],
     },
   "include": [
     "./src/**/*"
