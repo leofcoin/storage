@@ -56,12 +56,20 @@ export default class LeofcoinStorage {
 
   async has(key) {
     if (typeof key === 'object') return this.many('has', key)
-
     try {
       const has = await this.db.has(new Path(key))
-
       return Boolean(has)
     } catch (e) {
+      return false
+    }
+  }
+
+  async hasValue(key) {
+    if (typeof key === 'object') return this.many('hasValue', key)
+    try {
+      const value = await this.get(key)
+      return value !== undefined && value.length > 0
+    } catch (error) {
       return false
     }
   }

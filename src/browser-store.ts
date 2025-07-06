@@ -59,7 +59,7 @@ export default class BrowerStore {
     }
   }
 
-  async get(key: KeyInput) {
+  async get(key: KeyInput): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
       const task = async () => {
         debug(`get ${this.toKeyPath(key)}`)
