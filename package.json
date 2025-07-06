@@ -1,6 +1,6 @@
 {
   "name": "@leofcoin/storage",
-  "version": "3.5.36",
+  "version": "3.5.37",
   "exports": {
     ".": {
       "import": "./exports/storage.js",
