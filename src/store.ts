@@ -44,7 +44,11 @@ export default class Store {
   }
 
   async get(key) {
-    return this.toUint8Array(await this.db.get(this.toKeyPath(key)))
+    const value = await this.db.get(this.toKeyPath(key))
+    if (value.length === 0) {
+      throw new DOMException(`Key not found: ${this.toKeyPath(key)}`, 'NotFoundError')
+    }
+    return this.toUint8Array(value)
   }
 
   async put(key, value) {

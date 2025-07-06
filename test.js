@@ -3,7 +3,7 @@ import test from 'tape'
 let store
 
 test('@leofcoin/storage', async (tape) => {
-  tape.plan(15)
+  tape.plan(19)
   store = new m('deep', 'storage_test')
   await store.init()
   tape.ok(store, 'can create store')
@@ -33,6 +33,12 @@ test('@leofcoin/storage', async (tape) => {
   const iterate = await store.iterate()
   tape.ok(Object.keys(iterate).length > 0, 'can iterate')
 
+  await store.delete('has')
+  tape.notOk(await store.has('has'), 'has undefined value')
+
+  await store.put('has', new TextEncoder().encode(undefined))
+  tape.notOk(await store.has('has'), 'has undefined value')
+
   await store.put('hasValue', new TextEncoder().encode(undefined))
   tape.notOk(await store.hasValue('hasValue'), 'has undefined value')
 
@@ -47,4 +53,7 @@ test('@leofcoin/storage', async (tape) => {
 
   await store.put('hasValue', new TextEncoder().encode('not empty'))
   tape.ok(await store.hasValue('hasValue'), 'hasValue returns true for non-empty value')
+
+  tape.notOk(await store.has('nonexistentKey'), 'has returns false for nonexistent keys')
+  tape.notOk(await store.hasValue('nonexistentKey'), 'hasValue returns false for nonexistent keys')
 })
